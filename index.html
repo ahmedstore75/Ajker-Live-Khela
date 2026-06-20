@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live IPTV</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Video.js for HLS (.m3u8) streaming -->
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <!-- Google Fonts & FontAwesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -20,6 +23,7 @@
 </head>
 <body class="text-gray-200 min-h-screen flex flex-col">
 
+    <!-- Header Section -->
     <header class="bg-[#0f172a] border-b border-[#1e293b] px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <div class="flex items-center space-x-2">
             <i class="fa-solid fa-tv text-xl text-blue-500 animate-pulse"></i>
@@ -36,9 +40,12 @@
         </div>
     </header>
 
+    <!-- Main Content Container -->
     <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1600px] w-full mx-auto overflow-hidden">
         
+        <!-- Left Column: Player & Categories -->
         <div class="flex-1 flex flex-col gap-4">
+            <!-- Video Player Dashboard -->
             <div class="bg-[#0f172a] rounded-xl p-3 border border-[#1e293b] shadow-2xl">
                 <div class="flex items-center justify-between mb-2 px-1">
                     <div class="flex items-center space-x-2">
@@ -48,13 +55,23 @@
                     <span class="text-xs bg-red-600/20 text-red-400 px-2 py-0.5 rounded font-bold uppercase tracking-widest border border-red-500/30">Live</span>
                 </div>
                 
-                <div class="relative w-full md:w-2/3 rounded-lg overflow-hidden bg-black border border-[#1e293b] mx-auto shadow-inner">
+                <!-- Player Box Container -->
+                <div id="player-container" class="relative w-full md:w-2/3 rounded-lg overflow-hidden bg-black border border-[#1e293b] mx-auto shadow-inner">
                     <video id="iptv-player" class="video-js vjs-default-skin vjs-big-play-centered w-full h-full" controls preload="auto" poster="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1000">
                         <p class="vjs-no-js">To view this video please enable JavaScript</p>
                     </video>
                 </div>
+
+                <!-- Auto Rotate Zoom Button -->
+                <div class="mt-3 flex justify-center">
+                    <button id="zoom-rotate-btn" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs md:text-sm px-5 py-2.5 rounded-lg shadow-lg shadow-blue-500/20 transition-all flex items-center space-x-2 cursor-pointer active:scale-95">
+                        <i class="fa-solid fa-expand text-base"></i>
+                        <span>Zoom & Auto Rotate</span>
+                    </button>
+                </div>
             </div>
 
+            <!-- Categories Filter -->
             <div class="bg-[#0f172a] p-3 rounded-xl border border-[#1e293b]">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">Categories</h3>
                 <div id="category-container" class="flex gap-2 overflow-x-auto pb-1 snap-x scroll-smooth">
@@ -63,8 +80,10 @@
             </div>
         </div>
 
+        <!-- Right Column: Notice Board & Mixed Color Channel Grid -->
         <div class="w-full lg:w-[400px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-[calc(100vh-120px)] shadow-2xl">
             
+            <!-- Notice/Notification Board -->
             <div class="p-4 border-b border-[#1e293b] bg-gradient-to-r from-[#131c31] to-[#1e293b] rounded-t-xl">
                 <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
                     <i class="fa-solid fa-bullhorn animate-bounce"></i>
@@ -77,6 +96,7 @@
                 </div>
             </div>
 
+            <!-- Channels Grid -->
             <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 content-start">
                 <p class="col-span-full text-center text-gray-500 text-sm py-8">M3U প্লেলিস্ট লোড হচ্ছে...</p>
             </div>
@@ -84,6 +104,7 @@
 
     </main>
 
+    <!-- Script Section -->
     <script>
         const m3uPlaylistUrl = "https://raw.githubusercontent.com/ahan443/FAST-IPTV/refs/heads/main/combined_playlist.m3u"; 
 
@@ -94,7 +115,42 @@
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptv-player', { fluid: true, controls: true, liveui: true });
             fetchM3UPlaylist();
+            setupZoomRotate();
         });
+
+        // 🔄 Auto-Rotate & Zoom Fullscreen Logic
+        function setupZoomRotate() {
+            const zoomBtn = document.getElementById('zoom-rotate-btn');
+            const playerContainer = document.getElementById('player-container');
+
+            zoomBtn.addEventListener('click', async () => {
+                try {
+                    // প্রথমে প্লেয়ার কন্টেইনারকে ফুলস্ক্রিন মোডে নিয়ে যাওয়া হবে
+                    if (playerContainer.requestFullscreen) {
+                        await playerContainer.requestFullscreen();
+                    } else if (playerContainer.webkitRequestFullscreen) {
+                        await playerContainer.webkitRequestFullscreen(); // Safari
+                    } else if (playerContainer.msRequestFullscreen) {
+                        await playerContainer.msRequestFullscreen(); // IE/Edge
+                    }
+
+                    // ফুলস্ক্রিন হওয়া মাত্রই স্ক্রিনকে আড়াআড়ি (Landscape) মোডে লক করা হবে
+                    if (screen.orientation && screen.orientation.lock) {
+                        await screen.orientation.lock('landscape');
+                    }
+                } catch (error) {
+                    console.log("Orientation lock is only supported on mobile devices/HTTPS:", error);
+                    // যদি ওরিয়েন্টেশন লক কাজ নাও করে, সাধারণ ফুলস্ক্রিন ব্যাকআপ হিসেবে চালু থাকবে
+                }
+            });
+
+            // ফুলস্ক্রিন থেকে বের হয়ে গেলে স্ক্রিন আবার স্বাভাবিক (Portrait) করার লজিক
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
+                    screen.orientation.unlock();
+                }
+            });
+        }
 
         // Fetch and Parse M3U File
         async function fetchM3UPlaylist() {
@@ -164,7 +220,7 @@
             });
         }
 
-        // Render Channels Grid (Mixed Background Colors Design)
+        // Render Channels Grid
         function renderChannels() {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
@@ -180,13 +236,11 @@
 
             filteredChannels.forEach((channel, index) => {
                 const card = document.createElement('div');
-                
-                // ডাইনামিক কালার বৈচিত্র্য তৈরি করার জন্য ইনডেক্স অনুযায়ী আলাদা থিম নির্ধারণ
                 let cardBg = "bg-[#131c31] border-[#1e293b]";
                 if (index % 3 === 1) {
-                    cardBg = "bg-[#16223f] border-[#243765]"; // হালকা নীলচে বৈচিত্র্য
+                    cardBg = "bg-[#16223f] border-[#243765]"; 
                 } else if (index % 3 === 2) {
-                    cardBg = "bg-[#111a2e] border-[#1c2a4a]"; // একটু গাঢ় বৈচিত্র্য
+                    cardBg = "bg-[#111a2e] border-[#1c2a4a]"; 
                 }
 
                 card.className = `${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative`;
