@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live IPTV</title>
+    <title>Live IPTV - Laptop Enhanced</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -20,84 +20,72 @@
 </head>
 <body class="text-gray-200 min-h-screen flex flex-col">
 
-    <header class="bg-[#0f172a] border-b border-[#1e293b] px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+    <header class="bg-[#0f172a] border-b border-[#1e293b] px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-tv text-xl text-blue-500 animate-pulse"></i>
-            <h1 class="text-xl font-bold tracking-wider text-white flex items-center gap-1">
+            <i class="fa-solid fa-tv text-2xl text-blue-500 animate-pulse"></i>
+            <h1 class="text-2xl font-bold tracking-wider text-white flex items-center gap-1">
                 LIVE <span class="text-amber-400 font-extrabold">IPTV</span>
                 <i class="fa-solid fa-sun text-xs text-amber-400 ml-1"></i>
             </h1>
         </div>
         <div class="flex items-center space-x-4 text-sm text-gray-400">
-            <span class="hidden md:inline">Premium IPTV Player</span>
-            <span class="bg-[#1e293b] text-blue-400 px-3 py-1 rounded-full text-xs font-semibold border border-blue-500/20">
-                <i class="fa-solid fa-layer-group mr-1"></i> <span id="channel-count">0</span> Channels
+            <span class="hidden md:inline font-medium">Premium Laptop IPTV Player</span>
+            <span class="bg-[#1e293b] text-blue-400 px-4 py-1.5 rounded-full text-xs font-semibold border border-blue-500/20 shadow-sm">
+                <i class="fa-solid fa-layer-group mr-1"></i> <span id="channel-count" class="text-white font-bold">0</span> Channels
             </span>
         </div>
     </header>
 
-    <div class="bg-[#0f172a] border-b border-[#1e293b] p-3 max-w-[1600px] w-full mx-auto flex flex-col sm:flex-row gap-3 items-center justify-between px-4">
-        <div class="w-full sm:w-1/2 flex gap-2">
-            <input type="text" id="m3u-url-input" placeholder="আপনার M3U প্লেলিস্ট লিংক এখানে দিন..." class="w-full bg-[#0b111e] border border-[#1e293b] rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500">
-            <button id="load-url-btn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors cursor-pointer shrink-0">Load Link</button>
-        </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <span class="text-xs text-gray-400 font-medium">অথবা ফাইল আপলোড করুন:</span>
-            <input type="file" id="m3u-file-input" accept=".m3u" class="text-xs text-gray-400 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black hover:file:bg-amber-400 file:cursor-pointer">
-        </div>
-    </div>
-
-    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1600px] w-full mx-auto overflow-hidden">
+    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden lg:h-[calc(100vh-85px)]">
         
-        <div class="flex-1 flex flex-col gap-4">
-            <div class="bg-[#0f172a] rounded-xl p-3 border border-[#1e293b] shadow-2xl">
-                <div class="flex items-center justify-between mb-2 px-1">
+        <div class="flex-1 flex flex-col gap-4 overflow-y-auto pr-1">
+            <div class="bg-[#0f172a] rounded-xl p-4 border border-[#1e293b] shadow-2xl">
+                <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
-                        <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
-                        <span id="current-channel-title" class="font-semibold text-white tracking-wide text-sm md:text-base">একটি চ্যানেল সিলেক্ট করুন</span>
+                        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
+                        <span id="current-channel-title" class="font-bold text-white tracking-wide text-base md:text-lg">একটি চ্যানেল সিলেক্ট করুন</span>
                     </div>
-                    <span class="text-xs bg-red-600/20 text-red-400 px-2 py-0.5 rounded font-bold uppercase tracking-widest border border-red-500/30">Live</span>
+                    <span class="text-xs bg-red-600/20 text-red-400 px-3 py-1 rounded font-bold uppercase tracking-widest border border-red-500/30">Live</span>
                 </div>
                 
-                <div id="player-container" class="relative w-full md:w-2/3 rounded-lg overflow-hidden bg-black border border-[#1e293b] mx-auto shadow-inner">
+                <div class="relative w-full rounded-xl overflow-hidden bg-black border border-[#1e293b] shadow-inner aspect-video">
                     <video id="iptv-player" class="video-js vjs-default-skin vjs-big-play-centered w-full h-full" controls preload="auto" poster="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1000">
                         <p class="vjs-no-js">To view this video please enable JavaScript</p>
                     </video>
                 </div>
             </div>
 
-            <div class="bg-[#0f172a] p-3 rounded-xl border border-[#1e293b]">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">Categories</h3>
-                <div id="category-container" class="flex gap-2 overflow-x-auto pb-1 snap-x scroll-smooth">
-                    <p class="text-xs text-gray-500 italic">প্লেলিস্ট লোড হলে ক্যাটাগরি এখানে আসবে...</p>
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-[#1e293b] shadow-lg">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">Categories</h3>
+                <div id="category-container" class="flex gap-2 overflow-x-auto pb-2 snap-x scroll-smooth">
+                    <button class="snap-start shrink-0 px-4 py-2 rounded-lg text-xs font-semibold border bg-blue-600 text-white border-blue-500">Loading...</button>
                 </div>
             </div>
         </div>
 
-        <div class="w-full lg:w-[400px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-[calc(100vh-185px)] shadow-2xl">
+        <div class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[600px] lg:h-full shadow-2xl overflow-hidden">
             
             <div class="p-4 border-b border-[#1e293b] bg-gradient-to-r from-[#131c31] to-[#1e293b] rounded-t-xl">
-                <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
+                <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
                     <i class="fa-solid fa-bullhorn animate-bounce"></i>
                     <span>Notice Board</span>
                 </div>
-                <div class="bg-[#0b111e]/80 border border-amber-500/20 rounded-lg p-2 text-xs text-gray-300 overflow-hidden relative">
+                <div class="bg-[#0b111e]/80 border border-amber-500/20 rounded-lg p-2.5 text-xs text-gray-300 overflow-hidden relative">
                     <marquee behavior="scroll" direction="left" scrollamount="4" class="font-medium">
-                        স্বাগতম! আপনার .m3u ফাইলটি উপরে আপলোড করুন অথবা ইনপুট বক্সে লিংক দিয়ে "Load Link" বাটনে ক্লিক করুন। 
+                        স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
                     </marquee>
                 </div>
             </div>
 
-            <div id="channels-list" class="flex-1 overflow-y-auto p-3 flex flex-col gap-2">
-                <p class="text-center text-gray-500 text-xs py-8">কোনো চ্যানেল লোড করা নেই। প্রথমে প্লেলিস্ট সিলেক্ট করুন।</p>
+            <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 content-start">
+                <p class="col-span-full text-center text-gray-500 text-sm py-8">M3U প্লেলিস্ট লোড হচ্ছে...</p>
             </div>
         </div>
 
     </main>
 
     <script>
-        // ব্যাকআপ ডিফল্ট লিংক (যদি কাজ করে)
-        let m3uPlaylistUrl = "https://raw.githubusercontent.com/ahan443/FAST-IPTV/refs/heads/main/combined_playlist.m3u"; 
+        const m3uPlaylistUrl = "https://raw.githubusercontent.com/ahan443/FAST-IPTV/refs/heads/main/combined_playlist.m3u"; 
 
         let playlistData = [];
         let currentCategory = "All";
@@ -105,51 +93,24 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptv-player', { fluid: true, controls: true, liveui: true });
-            
-            // ইনপুট বাটন ইভেন্ট লিসেনার
-            document.getElementById('load-url-btn').addEventListener('click', () => {
-                const urlInput = document.getElementById('m3u-url-input').value.trim();
-                if(urlInput) {
-                    fetchM3UPlaylist(`https://api.allorigins.win/raw?url=${encodeURIComponent(urlInput)}`);
-                }
-            });
-
-            // লোকাল ফাইল আপলোড লিসেনার (এটি ল্যাপটপের জন্য ১০০% কাজ করবেই)
-            document.getElementById('m3u-file-input').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    processM3UData(evt.target.result);
-                };
-                reader.readAsText(file);
-            });
-
-            // শুরুতে ডিফল্ট ট্রাই করা
-            fetchM3UPlaylist(`https://api.allorigins.win/raw?url=${encodeURIComponent(m3uPlaylistUrl)}`);
+            fetchM3UPlaylist();
         });
 
-        // Fetch Data via API
-        async function fetchM3UPlaylist(url) {
+        // Fetch and Parse M3U File
+        async function fetchM3UPlaylist() {
             try {
-                document.getElementById('channels-list').innerHTML = `<p class="text-center text-gray-500 text-xs py-8">প্লেলিস্ট প্রসেস হচ্ছে...</p>`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Network issue");
+                const response = await fetch(m3uPlaylistUrl);
+                if (!response.ok) throw new Error("Network response error");
                 const m3uText = await response.text();
-                processM3UData(m3uText);
+                playlistData = parseM3U(m3uText);
+                
+                document.getElementById('channel-count').innerText = playlistData.length;
+                renderCategories();
+                renderChannels();
             } catch (error) {
                 console.error("Error loading M3U:", error);
-                document.getElementById('channels-list').innerHTML = `<p class="text-center text-red-400 text-xs py-8">ডিফল্ট লিংকটি সার্ভার ব্লকিংয়ের কারণে লোড হয়নি। দয়া করে আপনার .m3u ফাইলটি আপলোড করুন বা অন্য লিংক ব্যবহার করুন।</p>`;
+                document.getElementById('channels-list').innerHTML = `<p class="col-span-full text-center text-red-400 text-sm py-8">প্লেলিস্ট লোড করতে ব্যর্থ হয়েছে! লিংক বা CORS চেক করুন।</p>`;
             }
-        }
-
-        // Process Data after download/upload
-        function processM3UData(text) {
-            playlistData = parseM3U(text);
-            document.getElementById('channel-count').innerText = playlistData.length;
-            renderCategories();
-            renderChannels();
         }
 
         // Custom M3U Parser
@@ -188,7 +149,7 @@
 
             categories.forEach(cat => {
                 const btn = document.createElement('button');
-                btn.className = `snap-start shrink-0 px-4 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                btn.className = `snap-start shrink-0 px-4 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                     currentCategory === cat 
                     ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20' 
                     : 'bg-[#131c31] text-gray-400 border-[#1e293b] hover:bg-[#1e293b] hover:text-white'
@@ -203,7 +164,7 @@
             });
         }
 
-        // Render Channels Single Column (একটার পর একটা নিচে নিচে ডিজাইন)
+        // Render Channels Grid (Laptop Optimized Logo Display)
         function renderChannels() {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
@@ -213,29 +174,31 @@
             });
 
             if(filteredChannels.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-500 text-xs py-8">No channels found</p>`;
+                container.innerHTML = `<p class="col-span-full text-center text-gray-500 text-sm py-8">No channels found</p>`;
                 return;
             }
 
             filteredChannels.forEach((channel, index) => {
                 const card = document.createElement('div');
-                let cardBg = "bg-[#131c31] border-[#1e293b]";
-                if (index % 2 === 1) cardBg = "bg-[#16223f] border-[#243765]"; 
-
-                // সিঙ্গেল লিস্ট লেআউট (বামপাশে বড় লোগো, ডানপাশে নাম)
-                card.className = `${cardBg} border rounded-xl p-2 flex items-center gap-3 cursor-pointer hover:border-blue-500/80 hover:bg-[#1b2b4d] transition-all group overflow-hidden w-full`;
                 
+                let cardBg = "bg-[#131c31] border-[#1e293b]";
+                if (index % 3 === 1) {
+                    cardBg = "bg-[#16223f] border-[#243765]"; 
+                } else if (index % 3 === 2) {
+                    cardBg = "bg-[#111a2e] border-[#1c2a4a]"; 
+                }
+
+                card.className = `${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative h-36`;
+                
+                // ল্যাপটপে লোগো যেন একদম স্পষ্ট ও বড় দেখায় তার জন্য w-16 h-16 এবং অবজেক্ট ফিট ব্যবহার করা হয়েছে
                 card.innerHTML = `
-                    <div class="w-16 h-12 bg-[#0b111e] rounded-lg overflow-hidden border border-[#1e293b] shrink-0 shadow-sm">
-                        <img src="${channel.logo}" alt="" class="w-full h-full object-contain p-1" onerror="this.src='https://placehold.co/150x100/0f172a/white?text=TV'">
+                    <div class="absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors">
+                        <i class="fa-regular fa-star text-[10px]"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-semibold text-gray-200 group-hover:text-white truncate">${channel.name}</h4>
-                        <p class="text-[10px] text-gray-500 truncate">${channel.category}</p>
+                    <div class="w-16 h-16 bg-[#0b111e] rounded-lg mb-2 flex items-center justify-center p-1.5 border border-[#1e293b] group-hover:scale-105 transition-transform overflow-hidden shadow-md">
+                        <img src="${channel.logo}" alt="" class="w-full h-full object-contain rounded" onerror="this.src='https://placehold.co/150x150/0f172a/white?text=TV'">
                     </div>
-                    <div class="text-gray-600 group-hover:text-blue-400 transition-colors pr-2">
-                        <i class="fa-solid fa-circle-play text-base"></i>
-                    </div>
+                    <h4 class="text-[11px] font-semibold text-gray-300 group-hover:text-white line-clamp-2 w-full px-1 leading-tight">${channel.name}</h4>
                 `;
 
                 card.addEventListener('click', () => playChannel(channel));
@@ -247,7 +210,7 @@
         function playChannel(channel) {
             document.getElementById('current-channel-title').innerText = channel.name;
             player.src({ src: channel.url, type: 'application/x-mpegURL' });
-            player.play().catch(err => console.log("Playback error:", err));
+            player.play().catch(err => console.log("Playback error or prevented:", err));
         }
     </script>
 </body>
