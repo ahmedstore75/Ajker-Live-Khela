@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live IPTV - Laptop Enhanced</title>
+    <title>Live IPTV - Fixed Player Layout</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -11,16 +11,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0b111e; }
+        body { font-family: 'Inter', sans-serif; background-color: #0b111e; overflow-x: hidden; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen flex flex-col">
+<body class="text-gray-200 min-h-screen flex flex-col lg:h-screen">
 
-    <header class="bg-[#0f172a] border-b border-[#1e293b] px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+    <header class="bg-[#0f172a] border-b border-[#1e293b] px-6 py-4 flex items-center justify-between sticky top-0 z-50 h-[70px]">
         <div class="flex items-center space-x-2">
             <i class="fa-solid fa-tv text-2xl text-blue-500 animate-pulse"></i>
             <h1 class="text-2xl font-bold tracking-wider text-white flex items-center gap-1">
@@ -36,10 +36,10 @@
         </div>
     </header>
 
-    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden lg:h-[calc(100vh-85px)]">
+    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden h-[calc(100vh-70px)]">
         
-        <div class="flex-1 flex flex-col gap-4 overflow-y-auto pr-1">
-            <div class="bg-[#0f172a] rounded-xl p-4 border border-[#1e293b] shadow-2xl">
+        <div class="w-full lg:flex-1 flex flex-col gap-4 h-full overflow-hidden">
+            <div class="bg-[#0f172a] rounded-xl p-4 border border-[#1e293b] shadow-2xl flex flex-col justify-center">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
                         <span class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="bg-[#0f172a] p-4 rounded-xl border border-[#1e293b] shadow-lg">
+            <div class="bg-[#0f172a] p-4 rounded-xl border border-[#1e293b] shadow-lg shrink-0">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">Categories</h3>
                 <div id="category-container" class="flex gap-2 overflow-x-auto pb-2 snap-x scroll-smooth">
                     <button class="snap-start shrink-0 px-4 py-2 rounded-lg text-xs font-semibold border bg-blue-600 text-white border-blue-500">Loading...</button>
@@ -63,9 +63,9 @@
             </div>
         </div>
 
-        <div class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[600px] lg:h-full shadow-2xl overflow-hidden">
+        <div class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-full shadow-2xl overflow-hidden shrink-0">
             
-            <div class="p-4 border-b border-[#1e293b] bg-gradient-to-r from-[#131c31] to-[#1e293b] rounded-t-xl">
+            <div class="p-4 border-b border-[#1e293b] bg-gradient-to-r from-[#131c31] to-[#1e293b] rounded-t-xl shrink-0">
                 <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
                     <i class="fa-solid fa-bullhorn animate-bounce"></i>
                     <span>Notice Board</span>
@@ -164,7 +164,7 @@
             });
         }
 
-        // Render Channels Grid (Laptop Optimized Logo Display)
+        // Render Channels Grid
         function renderChannels() {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
@@ -188,9 +188,8 @@
                     cardBg = "bg-[#111a2e] border-[#1c2a4a]"; 
                 }
 
-                card.className = `${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative h-36`;
+                card.className = `${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative h-36 shrink-0`;
                 
-                // ল্যাপটপে লোগো যেন একদম স্পষ্ট ও বড় দেখায় তার জন্য w-16 h-16 এবং অবজেক্ট ফিট ব্যবহার করা হয়েছে
                 card.innerHTML = `
                     <div class="absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors">
                         <i class="fa-regular fa-star text-[10px]"></i>
