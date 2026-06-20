@@ -55,19 +55,11 @@
                     <span class="text-xs bg-red-600/20 text-red-400 px-2 py-0.5 rounded font-bold uppercase tracking-widest border border-red-500/30">Live</span>
                 </div>
                 
-                <!-- Player Box Container -->
+                <!-- Compact Player Box -->
                 <div id="player-container" class="relative w-full md:w-2/3 rounded-lg overflow-hidden bg-black border border-[#1e293b] mx-auto shadow-inner">
                     <video id="iptv-player" class="video-js vjs-default-skin vjs-big-play-centered w-full h-full" controls preload="auto" poster="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1000">
                         <p class="vjs-no-js">To view this video please enable JavaScript</p>
                     </video>
-                </div>
-
-                <!-- Auto Rotate Zoom Button -->
-                <div class="mt-3 flex justify-center">
-                    <button id="zoom-rotate-btn" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-xs md:text-sm px-5 py-2.5 rounded-lg shadow-lg shadow-blue-500/20 transition-all flex items-center space-x-2 cursor-pointer active:scale-95">
-                        <i class="fa-solid fa-expand text-base"></i>
-                        <span>Zoom & Auto Rotate</span>
-                    </button>
                 </div>
             </div>
 
@@ -83,7 +75,7 @@
         <!-- Right Column: Notice Board & Mixed Color Channel Grid -->
         <div class="w-full lg:w-[400px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-[calc(100vh-120px)] shadow-2xl">
             
-            <!-- Notice/Notification Board -->
+            <!-- Notice Board Section -->
             <div class="p-4 border-b border-[#1e293b] bg-gradient-to-r from-[#131c31] to-[#1e293b] rounded-t-xl">
                 <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-1">
                     <i class="fa-solid fa-bullhorn animate-bounce"></i>
@@ -91,13 +83,13 @@
                 </div>
                 <div class="bg-[#0b111e]/80 border border-amber-500/20 rounded-lg p-2 text-xs text-gray-300 overflow-hidden relative">
                     <marquee behavior="scroll" direction="left" scrollamount="4" class="font-medium">
-                        স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
+                        স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। ল্যাপটপ এবং মোবাইলে বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
                     </marquee>
                 </div>
             </div>
 
-            <!-- Channels Grid -->
-            <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 content-start">
+            <!-- Channels Grid (Bigger & Full-Screen Logo Design) -->
+            <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-4 content-start">
                 <p class="col-span-full text-center text-gray-500 text-sm py-8">M3U প্লেলিস্ট লোড হচ্ছে...</p>
             </div>
         </div>
@@ -106,7 +98,12 @@
 
     <!-- Script Section -->
     <script>
-        const m3uPlaylistUrl = "https://raw.githubusercontent.com/ahan443/FAST-IPTV/refs/heads/main/combined_playlist.m3u"; 
+        // আপনার দেওয়া আসল M3U লিংক
+        const rawM3uUrl = "https://raw.githubusercontent.com/ahan443/FAST-IPTV/refs/heads/main/combined_playlist.m3u"; 
+        
+        // 🛠️ ল্যাপটপে লোড না হওয়ার সমস্যা (CORS) সমাধানের জন্য অল্টারনেটিভ অল-ওপেন প্রক্সি প্রসেস
+        const m3uPlaylistUrl = `https://cors-anywhere.herokuapp.com/${rawM3uUrl}`;
+        const fallbackM3uUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rawM3uUrl)}`;
 
         let playlistData = [];
         let currentCategory = "All";
@@ -114,48 +111,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptv-player', { fluid: true, controls: true, liveui: true });
-            fetchM3UPlaylist();
-            setupZoomRotate();
+            fetchM3UPlaylist(fallbackM3uUrl); // AllOrigins প্রক্সি দিয়ে প্রথমে চেষ্টা করা হবে যা ল্যাপটপে ভালো কাজ করে
         });
 
-        // 🔄 Auto-Rotate & Zoom Fullscreen Logic
-        function setupZoomRotate() {
-            const zoomBtn = document.getElementById('zoom-rotate-btn');
-            const playerContainer = document.getElementById('player-container');
-
-            zoomBtn.addEventListener('click', async () => {
-                try {
-                    // প্রথমে প্লেয়ার কন্টেইনারকে ফুলস্ক্রিন মোডে নিয়ে যাওয়া হবে
-                    if (playerContainer.requestFullscreen) {
-                        await playerContainer.requestFullscreen();
-                    } else if (playerContainer.webkitRequestFullscreen) {
-                        await playerContainer.webkitRequestFullscreen(); // Safari
-                    } else if (playerContainer.msRequestFullscreen) {
-                        await playerContainer.msRequestFullscreen(); // IE/Edge
-                    }
-
-                    // ফুলস্ক্রিন হওয়া মাত্রই স্ক্রিনকে আড়াআড়ি (Landscape) মোডে লক করা হবে
-                    if (screen.orientation && screen.orientation.lock) {
-                        await screen.orientation.lock('landscape');
-                    }
-                } catch (error) {
-                    console.log("Orientation lock is only supported on mobile devices/HTTPS:", error);
-                    // যদি ওরিয়েন্টেশন লক কাজ নাও করে, সাধারণ ফুলস্ক্রিন ব্যাকআপ হিসেবে চালু থাকবে
-                }
-            });
-
-            // ফুলস্ক্রিন থেকে বের হয়ে গেলে স্ক্রিন আবার স্বাভাবিক (Portrait) করার লজিক
-            document.addEventListener('fullscreenchange', () => {
-                if (!document.fullscreenElement && screen.orientation && screen.orientation.unlock) {
-                    screen.orientation.unlock();
-                }
-            });
-        }
-
         // Fetch and Parse M3U File
-        async function fetchM3UPlaylist() {
+        async function fetchM3UPlaylist(url) {
             try {
-                const response = await fetch(m3uPlaylistUrl);
+                const response = await fetch(url);
                 if (!response.ok) throw new Error("Network response error");
                 const m3uText = await response.text();
                 playlistData = parseM3U(m3uText);
@@ -164,8 +126,12 @@
                 renderCategories();
                 renderChannels();
             } catch (error) {
-                console.error("Error loading M3U:", error);
-                document.getElementById('channels-list').innerHTML = `<p class="col-span-full text-center text-red-400 text-sm py-8">প্লেলিস্ট লোড করতে ব্যর্থ হয়েছে! লিংক বা CORS চেক করুন।</p>`;
+                console.error("Error loading M3U via primary proxy, trying backup...", error);
+                if(url !== m3uPlaylistUrl) {
+                    fetchM3UPlaylist(m3uPlaylistUrl); // সমস্যা হলে অল্টারনেটিভ প্রক্সি ট্রাই করবে
+                } else {
+                    document.getElementById('channels-list').innerHTML = `<p class="col-span-full text-center text-red-400 text-sm py-8">প্লেলিস্টটি সিকিউরিটি বা ব্রাউজার ব্লকিং জনিত কারণে লোড করা যায়নি। এটি কোনো লোকাল বা ওয়েব সার্ভারে আপলোড করে ওপেন করুন।</p>`;
+                }
             }
         }
 
@@ -220,7 +186,7 @@
             });
         }
 
-        // Render Channels Grid
+        // Render Channels Grid (Bigger full-box image styling)
         function renderChannels() {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
@@ -243,16 +209,17 @@
                     cardBg = "bg-[#111a2e] border-[#1c2a4a]"; 
                 }
 
-                card.className = `${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative`;
+                card.className = `${cardBg} border rounded-xl p-2 flex flex-col justify-between items-center cursor-pointer hover:border-blue-500/70 hover:bg-[#1b2b4d] transition-all group overflow-hidden h-36 relative`;
                 
+                // লোগোকে ফুল কাভার স্কিন দেওয়া হয়েছে
                 card.innerHTML = `
-                    <div class="absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors">
-                        <i class="fa-regular fa-star text-xs"></i>
+                    <div class="w-full h-24 bg-[#0b111e] rounded-lg overflow-hidden border border-[#1e293b] relative group-hover:scale-102 transition-transform shadow-md">
+                        <img src="${channel.logo}" alt="" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/300x200/0f172a/white?text=LIVE+TV'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5 justify-center">
+                             <i class="fa-solid fa-circle-play text-white text-lg drop-shadow-lg"></i>
+                        </div>
                     </div>
-                    <div class="w-14 h-14 bg-[#0b111e] rounded-lg mb-3 flex items-center justify-center p-1 border border-[#1e293b] group-hover:scale-105 transition-transform overflow-hidden shadow-md">
-                        <img src="${channel.logo}" alt="" class="w-full h-full object-contain rounded" onerror="this.src='https://placehold.co/150x150/0f172a/white?text=TV'">
-                    </div>
-                    <h4 class="text-xs font-semibold text-gray-300 group-hover:text-white line-clamp-2 w-full px-1">${channel.name}</h4>
+                    <h4 class="text-[11px] font-semibold text-gray-300 group-hover:text-white line-clamp-1 w-full text-center mt-2 px-1 truncate">${channel.name}</h4>
                 `;
 
                 card.addEventListener('click', () => playChannel(channel));
@@ -264,7 +231,7 @@
         function playChannel(channel) {
             document.getElementById('current-channel-title').innerText = channel.name;
             player.src({ src: channel.url, type: 'application/x-mpegURL' });
-            player.play().catch(err => console.log("Playback error or prevented:", err));
+            player.play().catch(err => console.log("Playback error:", err));
         }
     </script>
 </body>
