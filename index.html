@@ -16,6 +16,23 @@
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        
+        /* পোস্টার ইমেজটি যেন শুরুতে পুরো প্লেয়ার স্ক্রিন জুড়ে পারফেক্টলি ফিট থাকে */
+        .video-js .vjs-poster, 
+        .video-js .vjs-poster img,
+        .vjs-poster {
+            background-size: 100% 100% !important;
+            object-fit: cover !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* একটিভ বা সিলেক্টেড চ্যানেল কার্ডের জন্য কাস্টম স্টাইল */
+        .channel-card.active-channel {
+            border-color: #3b82f6 !important; /* উজ্জ্বল নীল বর্ডার */
+            background-color: #1e293b !important; /* কিছুটা হালকা ব্যাকগ্রাউন্ড */
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+        }
     </style>
 </head>
 <body class="text-gray-200 min-h-screen flex flex-col lg:h-screen">
@@ -38,7 +55,7 @@
 
     <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden h-[calc(100vh-70px)]">
         
-        <div class="w-full lg:flex-1 flex flex-col gap-4 h-full overflow-hidden">
+        <div class="w-full lg:flex-1 flex flex-col gap-4 h-full overflow-hidden justify-center">
             <div class="bg-[#0f172a] rounded-xl p-4 border border-[#1e293b] shadow-2xl flex flex-col justify-center">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <div class="flex items-center space-x-2">
@@ -49,29 +66,22 @@
                 </div>
                 
                 <div class="relative w-full rounded-xl overflow-hidden bg-black border border-[#1e293b] shadow-inner aspect-video">
-                    <video id="iptv-player" class="video-js vjs-default-skin vjs-big-play-centered w-full h-full" controls preload="auto" poster="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1000">
+                    <video id="iptv-player" class="video-js vjs-default-skin vjs-big-play-centered w-full h-full" controls preload="auto">
                         <p class="vjs-no-js">To view this video please enable JavaScript</p>
                     </video>
-                </div>
-            </div>
-
-            <div class="bg-[#0f172a] p-4 rounded-xl border border-[#1e293b] shadow-lg shrink-0">
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">Categories</h3>
-                <div id="category-container" class="flex gap-2 overflow-x-auto pb-2 snap-x scroll-smooth">
-                    <button class="snap-start shrink-0 px-4 py-2 rounded-lg text-xs font-semibold border bg-blue-600 text-white border-blue-500">Loading...</button>
                 </div>
             </div>
         </div>
 
         <div class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-full shadow-2xl overflow-hidden shrink-0">
             
-            <div class="p-4 border-b border-[#1e293b] bg-gradient-to-r from-[#131c31] to-[#1e293b] rounded-t-xl shrink-0">
-                <div class="flex items-center space-x-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
-                    <i class="fa-solid fa-bullhorn animate-bounce"></i>
-                    <span>Notice Board</span>
+            <div class="flex items-center bg-[#131c31] border-b border-[#1e293b] px-3 py-1.5 gap-2 shrink-0">
+                <div class="flex items-center space-x-1 text-amber-400 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 whitespace-nowrap">
+                    <i class="fa-solid fa-bullhorn text-[9px] animate-bounce"></i>
+                    <span>Notice</span>
                 </div>
-                <div class="bg-[#0b111e]/80 border border-amber-500/20 rounded-lg p-2.5 text-xs text-gray-300 overflow-hidden relative">
-                    <marquee behavior="scroll" direction="left" scrollamount="4" class="font-medium">
+                <div class="flex-1 overflow-hidden text-[11px] text-gray-300">
+                    <marquee behavior="scroll" direction="left" scrollamount="4" class="font-medium pt-0.5">
                         স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
                     </marquee>
                 </div>
@@ -85,16 +95,48 @@
     </main>
 
     <script>
-        const m3uPlaylistUrl = "https://raw.githubusercontent.com/ahan443/FAST-IPTV/refs/heads/main/combined_playlist.m3u"; 
+        const m3uPlaylistUrl = "https://raw.githubusercontent.com/ahmedstore75/Iptvbdlive/refs/heads/main/mixiptvchannel.m3u"; 
+        const defaultPosterUrl = "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1000";
 
         let playlistData = [];
-        let currentCategory = "All";
         let player;
 
         document.addEventListener('DOMContentLoaded', () => {
-            player = videojs('iptv-player', { fluid: true, controls: true, liveui: true });
+            player = videojs('iptv-player', { 
+                fluid: true, 
+                controls: true, 
+                liveui: true,
+                poster: defaultPosterUrl 
+            });
+            
             fetchM3UPlaylist();
+            setupOrientationFullscreen(); 
         });
+
+        // মোবাইল স্ক্রিন রোটেট হলে অটো ফুলস্ক্রিন করার ফাংশন
+        function setupOrientationFullscreen() {
+            const handleOrientationChange = () => {
+                const isLandscape = window.matchMedia("(orientation: landscape)").matches;
+                
+                if (window.innerWidth < 1024) { 
+                    if (isLandscape) {
+                        if (!player.isFullscreen()) {
+                            player.requestFullscreen();
+                        }
+                    } else {
+                        if (player.isFullscreen()) {
+                            player.exitFullscreen();
+                        }
+                    }
+                }
+            };
+
+            window.addEventListener("orientationchange", () => {
+                setTimeout(handleOrientationChange, 200); 
+            });
+            
+            window.addEventListener("resize", handleOrientationChange);
+        }
 
         // Fetch and Parse M3U File
         async function fetchM3UPlaylist() {
@@ -105,7 +147,6 @@
                 playlistData = parseM3U(m3uText);
                 
                 document.getElementById('channel-count').innerText = playlistData.length;
-                renderCategories();
                 renderChannels();
             } catch (error) {
                 console.error("Error loading M3U:", error);
@@ -127,9 +168,6 @@
                     const tvgLogoMatch = line.match(/tvg-logo="([^"]+)"/i);
                     currentChannel.logo = tvgLogoMatch ? tvgLogoMatch[1] : "";
 
-                    const groupTitleMatch = line.match(/group-title="([^"]+)"/i);
-                    currentChannel.category = groupTitleMatch ? groupTitleMatch[1] : "General";
-
                     const nameParts = line.split(',');
                     currentChannel.name = nameParts[nameParts.length - 1].trim() || "Unknown Channel";
                 } else if (line.startsWith('http') && currentChannel) {
@@ -141,44 +179,17 @@
             return channels;
         }
 
-        // Render Categories
-        function renderCategories() {
-            const categories = ["All", ...new Set(playlistData.map(item => item.category))];
-            const container = document.getElementById('category-container');
-            container.innerHTML = "";
-
-            categories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = `snap-start shrink-0 px-4 py-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                    currentCategory === cat 
-                    ? 'bg-blue-600 text-white border-blue-500 shadow-lg shadow-blue-500/20' 
-                    : 'bg-[#131c31] text-gray-400 border-[#1e293b] hover:bg-[#1e293b] hover:text-white'
-                }`;
-                btn.innerText = cat;
-                btn.addEventListener('click', () => {
-                    currentCategory = cat;
-                    renderCategories();
-                    renderChannels();
-                });
-                container.appendChild(btn);
-            });
-        }
-
         // Render Channels Grid
         function renderChannels() {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
 
-            const filteredChannels = playlistData.filter(channel => {
-                return (currentCategory === "All" || channel.category === currentCategory);
-            });
-
-            if(filteredChannels.length === 0) {
+            if(playlistData.length === 0) {
                 container.innerHTML = `<p class="col-span-full text-center text-gray-500 text-sm py-8">No channels found</p>`;
                 return;
             }
 
-            filteredChannels.forEach((channel, index) => {
+            playlistData.forEach((channel, index) => {
                 const card = document.createElement('div');
                 
                 let cardBg = "bg-[#131c31] border-[#1e293b]";
@@ -188,10 +199,11 @@
                     cardBg = "bg-[#111a2e] border-[#1c2a4a]"; 
                 }
 
-                card.className = `${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative h-36 shrink-0`;
+                // এখানে 'channel-card' ক্লাসটি যুক্ত করা হয়েছে ট্র্যাকিং করার জন্য
+                card.className = `channel-card ${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative h-36 shrink-0`;
                 
                 card.innerHTML = `
-                    <div class="absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors">
+                    <div class="star-icon absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors">
                         <i class="fa-regular fa-star text-[10px]"></i>
                     </div>
                     <div class="w-16 h-16 bg-[#0b111e] rounded-lg mb-2 flex items-center justify-center p-1.5 border border-[#1e293b] group-hover:scale-105 transition-transform overflow-hidden shadow-md">
@@ -200,16 +212,45 @@
                     <h4 class="text-[11px] font-semibold text-gray-300 group-hover:text-white line-clamp-2 w-full px-1 leading-tight">${channel.name}</h4>
                 `;
 
-                card.addEventListener('click', () => playChannel(channel));
+                // ক্লিক ইভেন্টে কার্ড এলিমেন্ট পাস করা হচ্ছে চিহ্ন ধরে রাখার জন্য
+                card.addEventListener('click', () => playChannel(channel, card));
                 container.appendChild(card);
             });
         }
 
         // Play Channel Function
-        function playChannel(channel) {
+        function playChannel(channel, selectedCardElement) {
             document.getElementById('current-channel-title').innerText = channel.name;
+            
+            // ১. পূর্বে সিলেক্ট থাকা কার্ড থেকে চিহ্ন বা অ্যাক্টিভ ক্লাস রিমুভ করা
+            document.querySelectorAll('.channel-card').forEach(card => {
+                card.classList.remove('active-channel');
+                // স্টার আইকনকে সাধারণ অবস্থায় ফিরিয়ে আনা
+                const iconContainer = card.querySelector('.star-icon');
+                if (iconContainer) {
+                    iconContainer.innerHTML = '<i class="fa-regular fa-star text-[10px]"></i>';
+                    iconContainer.className = "star-icon absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors";
+                }
+            });
+
+            // ২. বর্তমান ক্লিক করা কার্ডে নতুন অ্যাক্টিভ চিহ্ন বা ক্লাস যুক্ত করা
+            if (selectedCardElement) {
+                selectedCardElement.classList.add('active-channel');
+                // ক্লিক করা চ্যানেলের স্টার আইকনটি সলিড এবং সোনালী কালার করা
+                const activeIcon = selectedCardElement.querySelector('.star-icon');
+                if (activeIcon) {
+                    activeIcon.innerHTML = '<i class="fa-solid fa-star text-[10px]"></i>';
+                    activeIcon.className = "star-icon absolute top-2 right-2 text-amber-400 transition-colors";
+                }
+            }
+
+            player.poster(""); 
             player.src({ src: channel.url, type: 'application/x-mpegURL' });
-            player.play().catch(err => console.log("Playback error or prevented:", err));
+            player.load();
+            player.play().catch(err => {
+                console.log("Playback error or prevented:", err);
+                document.getElementById('current-channel-title').innerText = channel.name + " (প্লে হতে সমস্যা হচ্ছে...)";
+            });
         }
     </script>
 </body>
