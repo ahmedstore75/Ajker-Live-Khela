@@ -17,7 +17,6 @@
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
         
-        /* পোস্টার ইমেজটি যেন শুরুতে পুরো প্লেয়ার স্ক্রিন জুড়ে পারফেক্টলি ফিট থাকে */
         .video-js .vjs-poster, 
         .video-js .vjs-poster img,
         .vjs-poster {
@@ -27,14 +26,13 @@
             height: 100% !important;
         }
 
-        /* একটিভ বা সিলেক্টেড চ্যানেল কার্ডের জন্য কাস্টম স্টাইল */
         .channel-card.active-channel {
-            border-color: #3b82f6 !important; /* উজ্জ্বল নীল বর্ডার */
-            background-color: #1e293b !important; /* কিছুটা হালকা ব্যাকগ্রাউন্ড */
+            border-color: #3b82f6 !important;
+            background-color: #1e293b !important;
             box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
         }
 
-        /* 👑 আলটিমেট সিএসএস অটো-রোটেশন ফিক্স (কোনো বাটন প্রেস ছাড়া ফুলস্ক্রিন) */
+        /* 👑 আলটিমেট স্মুথ অটো-রোটেশন এবং ঝাঁকি-মুক্ত সিএসএস */
         @media (max-width: 1023px) and (orientation: landscape) {
             html, body {
                 overflow: hidden !important;
@@ -44,7 +42,6 @@
                 top: 0; left: 0;
             }
             
-            /* হেডার এবং সাইডবারের চ্যানেল লিস্ট সম্পূর্ণ হাইড */
             header, #sidebar-wrapper, #title-area {
                 display: none !important;
             }
@@ -57,7 +54,6 @@
                 width: 100vw !important;
             }
 
-            /* প্লেয়ার এরিয়াকে পুরো স্ক্রিন জুড়ে পুশ করা */
             #player-wrapper {
                 width: 100vw !important;
                 height: 100vh !important;
@@ -85,7 +81,7 @@
                 border: none !important;
             }
 
-            /* ভিডিও প্লেয়ার স্ট্রেচ করে ১ পিক্সেল কালো দাগও না রাখা */
+            /* ঝাঁকি প্রতিরোধক এবং স্মুথ ফিটিং স্টাইল */
             .video-js, 
             .video-js .vjs-tech, 
             .video-js video {
@@ -95,6 +91,7 @@
                 top: 0 !important;
                 left: 0 !important;
                 object-fit: fill !important;
+                transition: none !important; /* সাইজ পরিবর্তনের সময় অ্যানিমেশন বা ঝাঁকি বন্ধ করবে */
             }
         }
     </style>
@@ -166,8 +163,10 @@
         let player;
 
         document.addEventListener('DOMContentLoaded', () => {
+            // ঝাঁকি দূর করতে fluid: false এবং fill: true ব্যবহার করা হয়েছে
             player = videojs('iptv-player', { 
-                fluid: true, 
+                fluid: false, 
+                fill: true,
                 controls: true, 
                 liveui: true,
                 poster: defaultPosterUrl 
@@ -177,14 +176,12 @@
             setupOrientationFullscreen(); 
         });
 
-        // মোবাইল স্ক্রিন রোটেট ট্র্যাকিং এবং নেটিভ ফুলস্ক্রিন পুশ করার উন্নত ফাংশন
         function setupOrientationFullscreen() {
             const handleOrientationChange = () => {
                 const isLandscape = window.matchMedia("(orientation: landscape)").matches || (window.innerWidth > window.innerHeight);
                 
                 if (window.innerWidth < 1024) { 
                     if (isLandscape) {
-                        // যদি ব্রাউজার পারমিট করে তবে নেটিভ ফুলস্ক্রিন এপিআই রান করবে
                         if (player && typeof player.requestFullscreen === 'function' && !player.isFullscreen()) {
                             player.requestFullscreen();
                         }
@@ -198,16 +195,16 @@
 
             if (window.screen && window.screen.orientation) {
                 window.screen.orientation.addEventListener('change', () => {
-                    setTimeout(handleOrientationChange, 150);
+                    setTimeout(handleOrientationChange, 100);
                 });
             } else {
                 window.addEventListener("orientationchange", () => {
-                    setTimeout(handleOrientationChange, 150); 
+                    setTimeout(handleOrientationChange, 100); 
                 });
             }
             
             window.addEventListener("resize", () => {
-                setTimeout(handleOrientationChange, 100);
+                setTimeout(handleOrientationChange, 50);
             });
         }
 
