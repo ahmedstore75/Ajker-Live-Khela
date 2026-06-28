@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Live IPTV - Fixed Player Layout</title>
+    <title>Live IPTV - Premium Category Player</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -17,7 +17,6 @@
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
         
-        /* পোস্টার ইমেজটি যেন শুরুতে পুরো প্লেয়ার স্ক্রিন জুড়ে পারফেক্টলি ফিট থাকে */
         .video-js .vjs-poster, 
         .video-js .vjs-poster img,
         .vjs-poster {
@@ -27,14 +26,13 @@
             height: 100% !important;
         }
 
-        /* একটিভ বা সিলেক্টেড চ্যানেলカードের জন্য কাস্টম স্টাইল */
         .channel-card.active-channel {
-            border-color: #3b82f6 !important; /* উজ্জ্বল নীল বর্ডার */
-            background-color: #1e293b !important; /* কিছুটা হালকা ব্যাকগ্রাউন্ড */
+            border-color: #3b82f6 !important;
+            background-color: #1e293b !important;
             box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
         }
 
-        /* 👑 ভিডিওজেএস ফুল-উইন্ডো মোডে চলে গেলে ঝাঁকি ছাড়া ১০০% ফুলস্ক্রিন করার সিএসএস */
+        /* ঝাঁকি ছাড়া ফুলস্ক্রিন ফিক্স সিএসএস */
         .video-js.vjs-full-window {
             position: fixed !important;
             top: 0 !important;
@@ -45,39 +43,15 @@
             background-color: #000 !important;
         }
         .video-js.vjs-full-window .vjs-tech {
-            object-fit: fill !important; /* কালো বর্ডার ছাড়া স্ক্রিন ফিট করবে */
+            object-fit: fill !important;
         }
 
-        /* মোবাইল ল্যান্ডস্কেপ (কাত করলে) অটো-ফিট সিএসএস */
         @media (max-width: 1023px) and (orientation: landscape) {
-            html, body {
-                overflow: hidden !important;
-                height: 100vh !important;
-            }
-            header, #sidebar-wrapper, #title-area {
-                display: none !important;
-            }
-            main {
-                height: 100vh !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                max-width: 100% !important;
-                width: 100vw !important;
-            }
-            #player-wrapper, #player-wrapper > div, .aspect-video {
-                width: 100vw !important;
-                height: 100vh !important;
-                border: none !important;
-                border-radius: 0 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .video-js, .video-js .vjs-tech, .video-js video {
-                width: 100vw !important;
-                height: 100vh !important;
-                object-fit: fill !important;
-                transition: none !important;
-            }
+            html, body { overflow: hidden !important; height: 100vh !important; }
+            header, #sidebar-wrapper, #title-area { display: none !important; }
+            main { height: 100vh !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; width: 100vw !important; }
+            #player-wrapper, #player-wrapper > div, .aspect-video { width: 100vw !important; height: 100vh !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; }
+            .video-js, .video-js .vjs-tech, .video-js video { width: 100vw !important; height: 100vh !important; object-fit: fill !important; transition: none !important; }
         }
     </style>
 </head>
@@ -119,7 +93,7 @@
             </div>
         </div>
 
-        <div id="sidebar-wrapper" class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-full shadow-2xl overflow-hidden shrink-0">
+        <div id="sidebar-wrapper" class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[540px] lg:h-full shadow-2xl overflow-hidden shrink-0">
             
             <div class="flex items-center bg-[#131c31] border-b border-[#1e293b] px-3 py-1.5 gap-2 shrink-0">
                 <div class="flex items-center space-x-1 text-amber-400 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 whitespace-nowrap">
@@ -131,6 +105,15 @@
                         স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
                     </marquee>
                 </div>
+            </div>
+
+            <div class="p-3 bg-[#111a2e] border-b border-[#1e293b] flex flex-col gap-1.5 shrink-0">
+                <label for="category-select" class="text-xs font-semibold text-gray-400 flex items-center gap-1">
+                    <i class="fa-solid fa-filter text-blue-400"></i> ফিল্টার ক্যাটাগরি:
+                </label>
+                <select id="category-select" class="w-full bg-[#1e293b] text-gray-200 border border-[#334155] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-500 transition-colors cursor-pointer font-medium">
+                    <option value="all">All Channels (সব চ্যানেল)</option>
+                </select>
             </div>
 
             <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 content-start">
@@ -154,45 +137,35 @@
                 controls: true, 
                 liveui: true,
                 poster: defaultPosterUrl,
-                // ডিফল্ট ফুলস্ক্রিন এপিআই বন্ধ করে ফুল-উইন্ডো মোড এনাবল করা হয়েছে যাতে ঝাঁকি না মারে
                 preferFullWindow: true 
             });
             
             fetchM3UPlaylist();
-            setupOrientationFullscreen(); 
+            setupOrientationFullscreen();
+
+            // ক্যাটাগরি চেঞ্জ ইভেন্ট লিসেনার
+            document.getElementById('category-select').addEventListener('change', (e) => {
+                renderChannels(e.target.value);
+            });
         });
 
-        // মোবাইল স্ক্রিন রোটেট হলে অটো ফুলস্ক্রিন করার ফাংশন
         function setupOrientationFullscreen() {
             const handleOrientationChange = () => {
                 const isLandscape = window.matchMedia("(orientation: landscape)").matches || (window.innerWidth > window.innerHeight);
-                
                 if (window.innerWidth < 1024) { 
                     if (isLandscape) {
-                        if (player && !player.isFullscreen()) {
-                            player.enterFullWindow();
-                        }
+                        if (player && !player.isFullscreen()) { player.enterFullWindow(); }
                     } else {
-                        if (player && player.isFullscreen()) {
-                            player.exitFullWindow();
-                        }
+                        if (player && player.isFullscreen()) { player.exitFullWindow(); }
                     }
                 }
             };
-
             if (window.screen && window.screen.orientation) {
-                window.screen.orientation.addEventListener('change', () => {
-                    setTimeout(handleOrientationChange, 150);
-                });
+                window.screen.orientation.addEventListener('change', () => { setTimeout(handleOrientationChange, 150); });
             } else {
-                window.addEventListener("orientationchange", () => {
-                    setTimeout(handleOrientationChange, 150); 
-                });
+                window.addEventListener("orientationchange", () => { setTimeout(handleOrientationChange, 150); });
             }
-            
-            window.addEventListener("resize", () => {
-                setTimeout(handleOrientationChange, 100);
-            });
+            window.addEventListener("resize", () => { setTimeout(handleOrientationChange, 100); });
         }
 
         // Fetch and Parse M3U File
@@ -204,14 +177,16 @@
                 playlistData = parseM3U(m3uText);
                 
                 document.getElementById('channel-count').innerText = playlistData.length;
-                renderChannels();
+                
+                populateCategories(); // ক্যাটাগরি লিস্ট ড্রপডাউনে লোড করা
+                renderChannels('all'); // ডিফল্টভাবে সব চ্যানেল দেখানো
             } catch (error) {
                 console.error("Error loading M3U:", error);
                 document.getElementById('channels-list').innerHTML = `<p class="col-span-full text-center text-red-400 text-sm py-8">প্লেলিস্ট লোড করতে ব্যর্থ হয়েছে! লিংক বা CORS চেক করুন।</p>`;
             }
         }
 
-        // Custom M3U Parser
+        // 🛠️ উন্নত কাস্টম M3U পার্সার (ক্যাটাগরি ট্র্যাকিং সহ)
         function parseM3U(m3uString) {
             const lines = m3uString.split('\n');
             const channels = [];
@@ -222,9 +197,16 @@
 
                 if (line.startsWith('#EXTINF:')) {
                     currentChannel = {};
+                    
+                    // লোগো এক্সট্রাক্ট করা
                     const tvgLogoMatch = line.match(/tvg-logo="([^"]+)"/i);
                     currentChannel.logo = tvgLogoMatch ? tvgLogoMatch[1] : "";
 
+                    // ক্যাটাগরি (group-title) এক্সট্রাক্ট করা
+                    const groupTitleMatch = line.match(/group-title="([^"]+)"/i);
+                    currentChannel.category = groupTitleMatch ? groupTitleMatch[1].trim() : "Uncategorized";
+
+                    // চ্যানেলের নাম বের করা
                     const nameParts = line.split(',');
                     currentChannel.name = nameParts[nameParts.length - 1].trim() || "Unknown Channel";
                 } else if (line.startsWith('http') && currentChannel) {
@@ -236,25 +218,44 @@
             return channels;
         }
 
-        // Render Channels Grid
-        function renderChannels() {
+        // 📂 ক্যাটাগরি খুঁজে ড্রপডাউন লিস্ট জেনারেট করা
+        function populateCategories() {
+            const select = document.getElementById('category-select');
+            
+            // ইউনিক ক্যাটাগরিগুলোর একটি লিস্ট তৈরি
+            const categories = [...new Set(playlistData.map(channel => channel.category))];
+            
+            categories.forEach(category => {
+                if(category) {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.innerText = category;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // Render Channels Grid (ক্যাটাগরি ফিল্টার বেসড)
+        function renderChannels(selectedCategory = 'all') {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
 
-            if(playlistData.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center text-gray-500 text-sm py-8">No channels found</p>`;
+            // ক্যাটাগরি অনুযায়ী ফিল্টারিং
+            const filteredChannels = selectedCategory === 'all' 
+                ? playlistData 
+                : playlistData.filter(channel => channel.category === selectedCategory);
+
+            if(filteredChannels.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-gray-500 text-sm py-8">এই ক্যাটাগরিতে কোনো চ্যানেল পাওয়া যায়নি</p>`;
                 return;
             }
 
-            playlistData.forEach((channel, index) => {
+            filteredChannels.forEach((channel, index) => {
                 const card = document.createElement('div');
                 
                 let cardBg = "bg-[#131c31] border-[#1e293b]";
-                if (index % 3 === 1) {
-                    cardBg = "bg-[#16223f] border-[#243765]"; 
-                } else if (index % 3 === 2) {
-                    cardBg = "bg-[#111a2e] border-[#1c2a4a]"; 
-                }
+                if (index % 3 === 1) { cardBg = "bg-[#16223f] border-[#243765]"; } 
+                else if (index % 3 === 2) { cardBg = "bg-[#111a2e] border-[#1c2a4a]"; }
 
                 card.className = `channel-card ${cardBg} border rounded-xl p-3 flex flex-col items-center justify-between text-center cursor-pointer hover:border-blue-500/60 hover:bg-[#1b2b4d] transition-all group relative h-36 shrink-0`;
                 
