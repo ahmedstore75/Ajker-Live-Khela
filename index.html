@@ -32,11 +32,6 @@
             box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
         }
 
-        /* 🛠️ প্লেয়ারের নিজস্ব ফুলস্ক্রিন বাটন হাইড করা হলো, যাতে কোনো লাফ বা ঝাঁকি না মারে */
-        .vjs-fullscreen-control {
-            display: none !important;
-        }
-
         /* 👑 ১০০% অটো-ফিট এবং ফুলস্ক্রিন CSS মোড (মোবাইলের জন্য ল্যান্ডস্কেপ ফিক্স) */
         @media (max-width: 1023px) and (orientation: landscape) {
             html, body {
@@ -88,7 +83,7 @@
                 border: none !important;
             }
 
-            /* ভিডিও ফুল স্ক্রিনে কোন কালো বর্ডার ছাড়া ফিট করার জন্য */
+            /* ভিডিও ফুল স্ক্রিনে কোন কালো বর্ডার এবং ঝাঁকি ছাড়া ফিট করার জন্য */
             .video-js, 
             .video-js .vjs-tech, 
             .video-js video {
@@ -175,40 +170,63 @@
                 fill: true,
                 controls: true, 
                 liveui: true,
-                poster: defaultPosterUrl 
+                poster: defaultPosterUrl,
+                controlBar: {
+                    fullscreenToggle: true // বাটনটি আবার সচল করা হলো
+                }
+            });
+            
+            // 🛠️ ঝাঁকি দূর করার মাস্টার স্ক্রিপ্ট (ভিডিওজেএস ফুলস্ক্রিন ওভাররাইড)
+            player.ready(function() {
+                this.tech_.el_.style.transition = 'none';
+                
+                // জুম বাটনে ক্লিক করলে যেন পেজ না লাফিয়ে সরাসরি ব্রাউজার মোডে ফুলস্ক্রিন হয়
+                this.handleTechFullscreenChange_ = function() {
+                    if (this.isFullscreen()) {
+                        this.enterFullWindow();
+                    } else {
+                        this.exitFullWindow();
+                    }
+                };
             });
             
             fetchM3UPlaylist();
             setupOrientationFullscreen(); 
         });
 
-        // 🌟 কোনো বাটন ছাড়া পিওর সিএসএস লেআউট ফায়ার করার ফাংশন
+        // ফোন ঘোরালে অটোমেটিক ফুলস্ক্রিন ট্রিগার করার উন্নত মেকানিজম
         function setupOrientationFullscreen() {
             const handleOrientationChange = () => {
                 const isLandscape = window.matchMedia("(orientation: landscape)").matches || (window.innerWidth > window.innerHeight);
                 
                 if (window.innerWidth < 1024) { 
                     if (isLandscape) {
-                        // ল্যান্ডস্কেপ হলে প্লেয়ার অটোমেটিক পুরো স্ক্রিনে রিসাইজ হবে সিএসএস দ্বারা।
                         window.scrollTo(0, 0);
+                        const playerEl = document.getElementById('player-wrapper');
+                        if(playerEl && playerEl.requestFullscreen) {
+                            // কন্টেইনার ধরে ফুলস্ক্রিন করায় ঝাঁকি পুরোপুরি বন্ধ হবে
+                            playerEl.requestFullscreen().catch(() => {});
+                        }
                     } else {
-                        // সোজা করলে আবার নরমাল মোডে ব্যাক করবে।
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen().catch(() => {});
+                        }
                     }
                 }
             };
 
             if (window.screen && window.screen.orientation) {
                 window.screen.orientation.addEventListener('change', () => {
-                    setTimeout(handleOrientationChange, 100);
+                    setTimeout(handleOrientationChange, 120);
                 });
             } else {
                 window.addEventListener("orientationchange", () => {
-                    setTimeout(handleOrientationChange, 100); 
+                    setTimeout(handleOrientationChange, 120); 
                 });
             }
             
             window.addEventListener("resize", () => {
-                setTimeout(handleOrientationChange, 50);
+                setTimeout(handleOrientationChange, 60);
             });
         }
 
