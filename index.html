@@ -48,7 +48,7 @@
 
         @media (max-width: 1023px) and (orientation: landscape) {
             html, body { overflow: hidden !important; height: 100vh !important; }
-            header, #sidebar-wrapper, #title-area { display: none !important; }
+            header, #notice-bar, #sidebar-wrapper, #title-area { display: none !important; }
             main { height: 100vh !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; width: 100vw !important; }
             #player-wrapper, #player-wrapper > div, .aspect-video { width: 100vw !important; height: 100vh !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; }
             .video-js, .video-js .vjs-tech, .video-js video { width: 100vw !important; height: 100vh !important; object-fit: fill !important; transition: none !important; }
@@ -73,7 +73,19 @@
         </div>
     </header>
 
-    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden h-[calc(100vh-70px)]">
+    <div id="notice-bar" class="w-full bg-[#131c31] border-b border-[#1e293b] px-4 py-1 flex items-center gap-2 z-40 shrink-0 h-[28px]">
+        <div class="flex items-center space-x-1 text-amber-400 text-[9px] font-bold uppercase tracking-wider bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/10 whitespace-nowrap">
+            <i class="fa-solid fa-bullhorn text-[8px] animate-bounce"></i>
+            <span>Notice</span>
+        </div>
+        <div class="flex-1 overflow-hidden text-[11px] text-gray-300">
+            <marquee behavior="scroll" direction="left" scrollamount="4" class="font-medium block leading-none">
+                স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
+            </marquee>
+        </div>
+    </div>
+
+    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden h-[calc(100vh-98px)]">
         
         <div id="player-wrapper" class="w-full lg:flex-1 flex flex-col gap-4 h-full overflow-hidden justify-center">
             <div class="bg-[#0f172a] rounded-xl p-4 border border-[#1e293b] shadow-2xl flex flex-col justify-center">
@@ -93,20 +105,8 @@
             </div>
         </div>
 
-        <div id="sidebar-wrapper" class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[540px] lg:h-full shadow-2xl overflow-hidden shrink-0">
+        <div id="sidebar-wrapper" class="w-full lg:w-[450px] bg-[#0f172a] rounded-xl border border-[#1e293b] flex flex-col h-[500px] lg:h-full shadow-2xl overflow-hidden shrink-0">
             
-            <div class="flex items-center bg-[#131c31] border-b border-[#1e293b] px-3 py-1.5 gap-2 shrink-0">
-                <div class="flex items-center space-x-1 text-amber-400 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 whitespace-nowrap">
-                    <i class="fa-solid fa-bullhorn text-[9px] animate-bounce"></i>
-                    <span>Notice</span>
-                </div>
-                <div class="flex-1 overflow-hidden text-[11px] text-gray-300">
-                    <marquee behavior="scroll" direction="left" scrollamount="4" class="font-medium pt-0.5">
-                        স্বাগতম! আমাদের লাইভ আইপিটিভি প্লেলিস্টটি সফলভাবে আপডেট করা হয়েছে। বাফারিং মুক্ত স্ট্রিমিং উপভোগ করুন।
-                    </marquee>
-                </div>
-            </div>
-
             <div class="p-3 bg-[#111a2e] border-b border-[#1e293b] flex flex-col gap-1.5 shrink-0">
                 <label for="category-select" class="text-xs font-semibold text-gray-400 flex items-center gap-1">
                     <i class="fa-solid fa-filter text-blue-400"></i> ফিল্টার ক্যাটাগরি:
@@ -143,7 +143,6 @@
             fetchM3UPlaylist();
             setupOrientationFullscreen();
 
-            // ক্যাটাগরি চেঞ্জ ইভেন্ট লিসেনার
             document.getElementById('category-select').addEventListener('change', (e) => {
                 renderChannels(e.target.value);
             });
@@ -168,7 +167,6 @@
             window.addEventListener("resize", () => { setTimeout(handleOrientationChange, 100); });
         }
 
-        // Fetch and Parse M3U File
         async function fetchM3UPlaylist() {
             try {
                 const response = await fetch(m3uPlaylistUrl);
@@ -178,15 +176,14 @@
                 
                 document.getElementById('channel-count').innerText = playlistData.length;
                 
-                populateCategories(); // ক্যাটাগরি লিস্ট ড্রপডাউনে লোড করা
-                renderChannels('all'); // ডিফল্টভাবে সব চ্যানেল দেখানো
+                populateCategories(); 
+                renderChannels('all'); 
             } catch (error) {
                 console.error("Error loading M3U:", error);
                 document.getElementById('channels-list').innerHTML = `<p class="col-span-full text-center text-red-400 text-sm py-8">প্লেলিস্ট লোড করতে ব্যর্থ হয়েছে! লিংক বা CORS চেক করুন।</p>`;
             }
         }
 
-        // 🛠️ উন্নত কাস্টম M3U পার্সার (ক্যাটাগরি ট্র্যাকিং সহ)
         function parseM3U(m3uString) {
             const lines = m3uString.split('\n');
             const channels = [];
@@ -197,16 +194,12 @@
 
                 if (line.startsWith('#EXTINF:')) {
                     currentChannel = {};
-                    
-                    // লোগো এক্সট্রাক্ট করা
                     const tvgLogoMatch = line.match(/tvg-logo="([^"]+)"/i);
                     currentChannel.logo = tvgLogoMatch ? tvgLogoMatch[1] : "";
 
-                    // ক্যাটাগরি (group-title) এক্সট্রাক্ট করা
                     const groupTitleMatch = line.match(/group-title="([^"]+)"/i);
                     currentChannel.category = groupTitleMatch ? groupTitleMatch[1].trim() : "Uncategorized";
 
-                    // চ্যানেলের নাম বের করা
                     const nameParts = line.split(',');
                     currentChannel.name = nameParts[nameParts.length - 1].trim() || "Unknown Channel";
                 } else if (line.startsWith('http') && currentChannel) {
@@ -218,11 +211,8 @@
             return channels;
         }
 
-        // 📂 ক্যাটাগরি খুঁজে ড্রপডাউন লিস্ট জেনারেট করা
         function populateCategories() {
             const select = document.getElementById('category-select');
-            
-            // ইউনিক ক্যাটাগরিগুলোর একটি লিস্ট তৈরি
             const categories = [...new Set(playlistData.map(channel => channel.category))];
             
             categories.forEach(category => {
@@ -235,12 +225,10 @@
             });
         }
 
-        // Render Channels Grid (ক্যাটাগরি ফিল্টার বেসড)
         function renderChannels(selectedCategory = 'all') {
             const container = document.getElementById('channels-list');
             container.innerHTML = "";
 
-            // ক্যাটাগরি অনুযায়ী ফিল্টারিং
             const filteredChannels = selectedCategory === 'all' 
                 ? playlistData 
                 : playlistData.filter(channel => channel.category === selectedCategory);
@@ -274,7 +262,6 @@
             });
         }
 
-        // Play Channel Function
         function playChannel(channel, selectedCardElement) {
             document.getElementById('current-channel-title').innerText = channel.name;
             
@@ -283,7 +270,6 @@
                 const iconContainer = card.querySelector('.star-icon');
                 if (iconContainer) {
                     iconContainer.innerHTML = '<i class="fa-regular fa-star text-[10px]"></i>';
-                    iconContainer.className = "star-icon absolute top-2 right-2 text-gray-600 group-hover:text-amber-400 transition-colors";
                 }
             });
 
@@ -292,7 +278,6 @@
                 const activeIcon = selectedCardElement.querySelector('.star-icon');
                 if (activeIcon) {
                     activeIcon.innerHTML = '<i class="fa-solid fa-star text-[10px]"></i>';
-                    activeIcon.className = "star-icon absolute top-2 right-2 text-amber-400 transition-colors";
                 }
             }
 
@@ -300,7 +285,7 @@
             player.src({ src: channel.url, type: 'application/x-mpegURL' });
             player.load();
             player.play().catch(err => {
-                console.log("Playback error or prevented:", err);
+                console.log("Playback error:", err);
                 document.getElementById('current-channel-title').innerText = channel.name + " (প্লে হতে সমস্যা হচ্ছে...)";
             });
         }
