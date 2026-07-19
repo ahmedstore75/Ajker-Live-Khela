@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ajker Live Khela - IPTV Player</title>
+    <title>Ajker Live Khela - IPTV Player Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -33,48 +33,29 @@
         body.theme-light .channel-card:hover h4 { color: #000000 !important; }
         body.theme-light .channel-card.active-channel { border-color: #3b82f6 !important; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%) !important; }
 
+        /* ⚙️ কাস্টম কোয়ালিটি বাটন ও মেনু স্টাইল */
+        .vjs-quality-button { cursor: pointer; position: relative; display: flex; items-center: center; justify-content: center; }
+        .vjs-quality-menu { display: none; position: absolute; bottom: 40px; right: 0; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 8px; padding: 6px 0; min-width: 100px; z-index: 99; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
+        .vjs-quality-menu.show { display: block; }
+        .vjs-quality-item { padding: 6px 14px; font-size: 11px; color: #cbd5e1; text-align: left; font-weight: 600; width: 100%; display: block; transition: all 0.2s; }
+        .vjs-quality-item:hover { background: #1e293b; color: #fff; }
+        .vjs-quality-item.vjs-selected { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #334155; }
         
-        .video-js .vjs-poster, 
-        .video-js .vjs-poster img,
-        .vjs-poster {
-            background-size: 100% 100% !important;
-            object-fit: cover !important;
-            width: 100% !important;
-            height: 100% !important;
-        }
-
+        .video-js .vjs-poster, .video-js .vjs-poster img, .vjs-poster { background-size: 100% 100% !important; object-fit: cover !important; width: 100% !important; height: 100% !important; }
         .channel-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .channel-card.active-channel {
-            border-color: #3b82f6 !important;
-            background: linear-gradient(135deg, #1e293b 0%, #111a2e 100%) !important;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1);
-        }
+        .channel-card.active-channel { border-color: #3b82f6 !important; background: linear-gradient(135deg, #1e293b 0%, #111a2e 100%) !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1); }
 
-        .video-js.vjs-full-window {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 99999 !important;
-            background-color: #000 !important;
-        }
-
+        .video-js.vjs-full-window { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important; background-color: #000 !important; }
         .notice-container { display: flex; overflow: hidden; width: 100%; white-space: nowrap; }
         .notice-scroller { display: inline-block; padding-left: 100%; animation: marqueeEffect 32s linear infinite; }
-        @keyframes marqueeEffect {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-
-        @keyframes premiumShimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        
+        @keyframes marqueeEffect { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        @keyframes premiumShimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .shimmer-bg { background: linear-gradient(90deg, #131c31 25%, #223152 50%, #131c31 75%); background-size: 200% 100%; animation: premiumShimmer 1.8s infinite linear; }
         .shimmer-element { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: premiumShimmer 1.8s infinite linear; }
 
@@ -174,7 +155,7 @@
     </div>
 
     <!-- 🖥️ মেইন কন্টেন্ট এরিয়া -->
-    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden h-[calc(100vh-108px)]">
+    <main class="flex-1 flex flex-col lg:flex-row p-4 gap-4 max-w-[1800px] w-full mx-auto overflow-hidden h-[calc(100vh-110px)]">
         
         <div id="player-wrapper" class="w-full lg:flex-1 flex flex-col gap-4 h-full overflow-hidden justify-center">
             <div class="bg-[#0f172a] rounded-xl p-4 border border-[#1e293b] shadow-2xl flex flex-col justify-center">
@@ -183,8 +164,8 @@
                         <span id="live-dot" class="w-2 h-2 bg-emerald-500 rounded-full animate-ping mr-1"></span>
                         <span id="current-channel-title" class="font-black text-white tracking-wide text-sm md:text-base drop-shadow transition-all duration-300">একটি চ্যানেল সিলেক্ট করুন</span>
                     </div>
-                    <div class="flex items-center space-x-2 shrink-0">
-                        <span id="txt-live-badge" class="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-black uppercase tracking-widest border border-red-500 shadow-sm animate-pulse select-none">Live</span>
+                    <div class="flex items-center space-x-2 shrink-0 select-none">
+                        <span id="txt-live-badge" class="text-[10px] bg-red-600 text-white px-2 py-1 rounded font-black uppercase tracking-widest border border-red-500 shadow-sm animate-pulse">Live</span>
                     </div>
                 </div>
                 
@@ -253,12 +234,13 @@
                 controls: true, 
                 liveui: true,
                 poster: defaultPosterUrl,
-                preferFullWindow: true 
+                preferFullWindow: true
             });
             
             fetchM3UPlaylist();
             setupOrientationFullscreen();
             setupMenuDropdown();
+            setupQualitySelector(); // ⚙️ কোয়ালিটি কন্ট্রোল ফাংশন রান
 
             document.getElementById('category-select').addEventListener('change', () => {
                 document.getElementById('search-input').value = "";
@@ -289,10 +271,84 @@
             document.body.classList.toggle('theme-light');
         }
 
+        // ⚙️ ডাইনামিক ভিডিও কোয়ালিটি রেজোলিউশন সিলেকশন মেনু
+        function setupQualitySelector() {
+            player.on('loadedmetadata', function() {
+                // পূর্বে তৈরি কোনো কোয়ালিটি বাটন থেকে থাকলে তা রিমুভ করি
+                const existingBtn = player.controlBar.el().querySelector('.vjs-quality-button');
+                if(existingBtn) existingBtn.remove();
+
+                // Video.js HLS টেক থেকে উপলব্ধ কোয়ালিটি লেভেল সংগ্রহ করা
+                let qualityLevels = [];
+                try {
+                    const tech = player.tech({ IWillNotUseThisInPlugins: true });
+                    if (tech && tech.vhs && tech.vhs.representations) {
+                        qualityLevels = tech.vhs.representations();
+                    }
+                } catch(e) { console.log("HLS Quality levels read error:", e); }
+
+                // যদি স্ট্রিমে মাল্টিপল রেজোলিউশন (কোয়ালিটি) থাকে, তবেই বাটন দেখাবে
+                if (qualityLevels && qualityLevels.length > 0) {
+                    const controlBar = player.controlBar;
+                    const qualityBtn = controlBar.addChild('button', {}, controlBar.children_.length - 1);
+                    
+                    qualityBtn.addClass('vjs-quality-button');
+                    qualityBtn.addClass('vjs-control');
+                    qualityBtn.el().innerHTML = `<i class="fa-solid fa-gear text-sm mt-3.5"></i><div class="vjs-quality-menu" id="vjs-q-menu"></div>`;
+                    qualityBtn.el().title = "Change Video Quality";
+
+                    const menu = document.getElementById('vjs-q-menu');
+                    
+                    // মেনু টগল ইভেন্ট
+                    qualityBtn.on('click', (e) => {
+                        e.stopPropagation();
+                        menu.classList.toggle('show');
+                    });
+                    
+                    document.addEventListener('click', () => menu.classList.remove('show'));
+
+                    // 'Auto' অপশন যোগ করা
+                    const autoItem = document.createElement('button');
+                    autoItem.className = 'vjs-quality-item vjs-selected';
+                    autoItem.innerText = 'Auto';
+                    autoItem.onclick = () => {
+                        clearSelection();
+                        autoItem.classList.add('vjs-selected');
+                        qualityLevels.forEach(level => level.enabled(true)); // সব লেভেল ট্রু মানে অটো মোড
+                    };
+                    menu.appendChild(autoItem);
+
+                    // উপলব্ধ নির্দিষ্ট রেজোলিউশনগুলো (যেমন: 1080p, 720p, 480p) মেনুতে যোগ করা
+                    qualityLevels.forEach((level, index) => {
+                        const item = document.createElement('button');
+                        item.className = 'vjs-quality-item';
+                        // রেজোলিউশন হাইট নির্ধারণ (হাইট না থাকলে ব্যান্ডউইথ অনুযায়ী নাম দেওয়া)
+                        const label = level.height ? level.height + 'p' : Math.round(level.bandwidth / 1000) + 'kbps';
+                        item.innerText = label;
+                        
+                        item.onclick = () => {
+                            clearSelection();
+                            item.classList.add('vjs-selected');
+                            // সিলেক্টেড কোয়ালিটি বাদে বাকি সব লেভেল সাময়িক ডিজেবল করা
+                            qualityLevels.forEach((l, idx) => {
+                                l.enabled(idx === index);
+                            });
+                        };
+                        menu.appendChild(item);
+                    });
+
+                    function clearSelection() {
+                        const items = menu.querySelectorAll('.vjs-quality-item');
+                        items.forEach(i => i.classList.remove('vjs-selected'));
+                    }
+                }
+            });
+        }
+
         function toggleLanguage() {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             const translations = {
-                bn: { selectCh: "একটি চ্যানেল সিলেক্ট করুন", cat: "<i class='fa-solid fa-filter text-blue-400'></i> ক্যাটাগরি:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> চ্যানেল খুঁজুন:", input: "নাম লিখুন...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "লাইভ টিভি চ্যানেল বা খেলা দেখতে বা বাফারিং-এর কোনো সমস্যা হলে অনুগ্রহ করে আপনার ব্রাউজারের পেইজটি একবার রিফ্রেশ (Refresh) করে নিন অথবা অন্য কোনো ক্যাটাগরির চ্যানেল সিলেক্ট করে পুনরায় চেষ্টা করুন। নিরবচ্ছিন্ন প্রিমিয়াম স্ট্রিমিং অভিজ্ঞতা উপভোগ করার জন্য ধন্যবাদ!", d1: "প্লেলিস্ট রিফ্রেশ", ds1: "চ্যানেল তালিকা আপডেট করুন", d2: "থিম মুড পরিবর্তন", ds2: "ডার্ক / লাইট মোড টগল", d3: "ভাষা পরিবর্তন করুন", ds3: "ভাষা পরিবর্তন করুন (EN/BN)", d4: "পছন্দের চ্যানেল", ds4: "আপনার পছন্দের চ্যানেলগুলো দেখুন", d5: "সাম্প্রতিক চ্যানেল", ds5: "সম্প্রতি দেখা চ্যানেল তালিকা", d6: "যোগাযোগ ও সাপোর্ট", ds6: "ফেসবুকে আমাদের মেসেজ দিন" },
+                bn: { selectCh: "একটি... চ্যানেল সিলেক্ট করুন", cat: "<i class='fa-solid fa-filter text-blue-400'></i> ক্যাটাগরি:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> চ্যানেল খুঁজুন:", input: "নাম লিখুন...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "লাইভ টিভি চ্যানেল বা খেলা দেখতে বা বাফারিং-এর কোনো সমস্যা হলে অনুগ্রহ করে আপনার ব্রাউজারের পেইজটি একবার রিফ্রেশ (Refresh) করে নিন অথবা অন্য কোনো ক্যাটাগরির চ্যানেল সিলেক্ট করে পুনরায় চেষ্টা করুন। নিরবচ্ছিন্ন প্রিমিয়াম স্ট্রিমিং অভিজ্ঞতা উপভোগ করার জন্য ধন্যবাদ!", d1: "প্লেলিস্ট রিফ্রেশ", ds1: "চ্যানেল তালিকা আপডেট করুন", d2: "থিম মুড পরিবর্তন", ds2: "ডার্ক / লাইট মোড টগল", d3: "ভাষা পরিবর্তন করুন", ds3: "ভাষা পরিবর্তন করুন (EN/BN)", d4: "পছন্দের চ্যানেল", ds4: "আপনার পছন্দের চ্যানেলগুলো দেখুন", d5: "সাম্প্রতিক চ্যানেল", ds5: "সম্প্রতি দেখা চ্যানেল তালিকা", d6: "যোগাযোগ ও সাপোর্ট", ds6: "ফেসবুকে আমাদের মেসেজ দিন" },
                 en: { selectCh: "Select a channel to play", cat: "<i class='fa-solid fa-filter text-blue-400'></i> Category:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> Search Channel:", input: "Type name...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "If you face any issues watching live TV channels or games, or experience buffering, please refresh your browser page or select another category channel and try again. Thank you for enjoying a premium streaming experience!", d1: "Refresh Playlist", ds1: "Reload channel list from server", d2: "Theme Mode", ds2: "Toggle Dark / Light background", d3: "Language Change", ds3: "Switch language instantly (BN/EN)", d4: "Favorite Channels", ds4: "View your saved custom channels", d5: "Recent Played", ds5: "History of recently played streams", d6: "Contact & Support", ds6: "Message us on Facebook" }
             };
             const data = translations[currentLang];
@@ -375,6 +431,7 @@
         function toggleFavorite(e, channelName) { e.stopPropagation(); const idx = favoriteChannels.indexOf(channelName); if (idx > -1) { favoriteChannels.splice(idx, 1); } else { favoriteChannels.push(channelName); } localStorage.setItem('iptv_favorites', JSON.stringify(favoriteChannels)); filterAndRender(); }
         function addToRecents(channelName) { const idx = recentChannels.indexOf(channelName); if (idx > -1) { recentChannels.splice(idx, 1); } recentChannels.unshift(channelName); if (recentChannels.length > 15) recentChannels.pop(); localStorage.setItem('iptv_recents', JSON.stringify(recentChannels)); }
 
+        // ফিল্টারিং ও রেন্ডারিং লজিক (শিমার ভ্যানিশ ফিক্স সহ)
         function filterAndRender() {
             const selectedCategory = document.getElementById('category-select').value;
             const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
@@ -384,6 +441,7 @@
             if (selectedCategory === "__favorites__") { sourceList = playlistData.filter(c => favoriteChannels.includes(c.name)); } 
             else if (selectedCategory === "__recents__") { sourceList = []; recentChannels.forEach(name => { const found = playlistData.find(c => c.name === name); if (found) sourceList.push(found); }); }
             let filteredChannels = sourceList.filter(channel => { const matchSearch = channel.name.toLowerCase().includes(searchQuery); const matchCat = (selectedCategory === 'all' || selectedCategory === '__favorites__' || selectedCategory === '__recents__') || channel.category === selectedCategory; return searchQuery !== "" ? matchSearch : matchCat; });
+            
             if(filteredChannels.length === 0) { container.innerHTML = `<p class="col-span-full text-center text-gray-500 text-xs py-8 font-medium">${currentLang === 'bn' ? 'কোনো চ্যানেল পাওয়া যায়নি!' : 'No channels found!'}</p>`; return; }
             filteredChannels.forEach((channel, index) => {
                 const card = document.createElement('div');
