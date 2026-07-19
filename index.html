@@ -25,13 +25,41 @@
         body.theme-light #sidebar-wrapper > div:first-child { background-color: #f8fafc !important; border-color: #e2e8f0 !important; }
         body.theme-light #sidebar-wrapper label { color: #64748b !important; }
         body.theme-light #category-select, body.theme-light #search-input { background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
-        body.theme-light #menu-dropdown { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
-        body.theme-light #menu-dropdown button { color: #334155 !important; }
-        body.theme-light #menu-dropdown button:hover { background-color: #f1f5f9 !important; }
-        body.theme-light .channel-card { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
-        body.theme-light .channel-card h4 { color: #334155 !important; }
-        body.theme-light .channel-card:hover h4 { color: #000000 !important; }
-        body.theme-light .channel-card.active-channel { border-color: #3b82f6 !important; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%) !important; }
+        
+        /* লাইট থিমে ড্রপডাউন ও বাটন এডজাস্টমেন্ট */
+        body.theme-light #menu-dropdown { background-color: #ffffff !important; border-color: #cbd5e1 !important; }
+        body.theme-light .menu-item-btn { background-color: #f8fafc !important; border-color: #e2e8f0 !important; color: #334155 !important; }
+        body.theme-light .menu-item-btn:hover { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #000000 !important; }
+
+        /* 🎛️ নতুন ড্রপডাউন মেনু ও স্পেসিফিক বাটন স্টাইল */
+        .menu-item-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 12px;
+            border-radius: 10px;
+            background-color: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .menu-item-btn:last-child { margin-bottom: 0; }
+        
+        /* হোভার এবং একটিভ ক্লিকের ভিজ্যুয়াল ইফেক্ট */
+        .menu-item-btn:hover {
+            background-color: rgba(30, 41, 59, 0.9);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+        .menu-item-btn:active {
+            transform: scale(0.96);
+            background-color: rgba(15, 23, 42, 0.8);
+            border-color: rgba(59, 130, 246, 0.7);
+        }
 
         /* ⚙️ কাস্টম কোয়ালিটি বাটন ও মেনু স্টাইল */
         .vjs-quality-button { cursor: pointer; position: relative; display: flex; items-center: center; justify-content: center; }
@@ -77,49 +105,53 @@
                 <i class="fa-solid fa-sliders text-[16px] drop-shadow-md"></i>
             </button>
 
-            <div id="menu-dropdown" class="hidden absolute left-0 mt-2.5 w-56 bg-[#0f172a] border border-[#1e293b] rounded-xl shadow-2xl p-2 z-50 animate-fade-in">
-                <button onclick="refreshPlaylistData()" class="w-full flex items-center space-x-3 text-left px-3 py-2 text-xs rounded-lg text-gray-300 hover:text-white hover:bg-[#1e293b] transition-colors cursor-pointer">
-                    <i class="fa-solid fa-sync text-emerald-400 w-4"></i>
+            <!-- 🎛️ নতুন বর্ডার ও স্পষ্ট স্ট্রাকচারের ড্রপডাউন মেনু বাটনসমূহ -->
+            <div id="menu-dropdown" class="hidden absolute left-0 mt-3 w-60 bg-[#0f172a]/95 backdrop-blur-md border border-[#1e293b] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 z-50 animate-fade-in">
+                <button onclick="refreshPlaylistData()" class="menu-item-btn text-gray-300">
+                    <i class="fa-solid fa-sync text-emerald-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-1" class="font-bold">Refresh Playlist</p>
-                        <p id="dropdown-sub-1" class="text-[9px] text-gray-500">চ্যানেল তালিকা আপডেট করুন</p>
+                        <p id="dropdown-txt-1" class="font-bold tracking-wide">Refresh Playlist</p>
+                        <p id="dropdown-sub-1" class="text-[9px] text-gray-500 mt-0.5">চ্যানেল তালিকা আপডেট করুন</p>
                     </div>
                 </button>
-                <button onclick="toggleTheme()" class="w-full flex items-center space-x-3 text-left px-3 py-2 text-xs rounded-lg text-gray-300 hover:text-white hover:bg-[#1e293b] transition-colors cursor-pointer">
-                    <i class="fa-solid fa-circle-half-stroke text-indigo-400 w-4"></i>
+                
+                <button onclick="toggleTheme()" class="menu-item-btn text-gray-300">
+                    <i class="fa-solid fa-circle-half-stroke text-indigo-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-2" class="font-bold">Theme Mode</p>
-                        <p id="dropdown-sub-2" class="text-[9px] text-gray-500">ডার্ক / লাইট মোড টগল</p>
+                        <p id="dropdown-txt-2" class="font-bold tracking-wide">Theme Mode</p>
+                        <p id="dropdown-sub-2" class="text-[9px] text-gray-500 mt-0.5">ডার্ক / লাইট মোড টগল</p>
                     </div>
                 </button>
-                <button onclick="toggleLanguage()" class="w-full flex items-center space-x-3 text-left px-3 py-2 text-xs rounded-lg text-gray-300 hover:text-white hover:bg-[#1e293b] transition-colors cursor-pointer">
-                    <i class="fa-solid fa-language text-rose-400 w-4"></i>
+                
+                <button onclick="toggleLanguage()" class="menu-item-btn text-gray-300">
+                    <i class="fa-solid fa-language text-rose-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-3" class="font-bold">Language Change</p>
-                        <p id="dropdown-sub-3" class="text-[9px] text-gray-500">ভাষা পরিবর্তন করুন (EN/BN)</p>
+                        <p id="dropdown-txt-3" class="font-bold tracking-wide">Language Change</p>
+                        <p id="dropdown-sub-3" class="text-[9px] text-gray-500 mt-0.5">ভাষা পরিবর্তন করুন (EN/BN)</p>
                     </div>
                 </button>
-                <hr class="border-[#1e293b] my-1">
-                <button onclick="filterByFavorites()" class="w-full flex items-center space-x-3 text-left px-3 py-2 text-xs rounded-lg text-gray-300 hover:text-white hover:bg-[#1e293b] transition-colors cursor-pointer">
-                    <i class="fa-solid fa-star text-amber-400 w-4"></i>
+                
+                <button onclick="filterByFavorites()" class="menu-item-btn text-gray-300">
+                    <i class="fa-solid fa-star text-amber-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-4" class="font-bold">Favorite Channels</p>
-                        <p id="dropdown-sub-4" class="text-[9px] text-gray-500">আপনার পছন্দের চ্যানেলগুলো দেখুন</p>
+                        <p id="dropdown-txt-4" class="font-bold tracking-wide">Favorite Channels</p>
+                        <p id="dropdown-sub-4" class="text-[9px] text-gray-500 mt-0.5">আপনার পছন্দের চ্যানেলগুলো দেখুন</p>
                     </div>
                 </button>
-                <button onclick="filterByRecents()" class="w-full flex items-center space-x-3 text-left px-3 py-2 text-xs rounded-lg text-gray-300 hover:text-white hover:bg-[#1e293b] transition-colors cursor-pointer">
-                    <i class="fa-solid fa-clock-rotate-left text-cyan-400 w-4"></i>
+                
+                <button onclick="filterByRecents()" class="menu-item-btn text-gray-300">
+                    <i class="fa-solid fa-clock-rotate-left text-cyan-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-5" class="font-bold">Recent Played</p>
-                        <p id="dropdown-sub-5" class="text-[9px] text-gray-500">সম্প্রতি দেখা চ্যানেল তালিকা</p>
+                        <p id="dropdown-txt-5" class="font-bold tracking-wide">Recent Played</p>
+                        <p id="dropdown-sub-5" class="text-[9px] text-gray-500 mt-0.5">সম্প্রতি দেখা চ্যানেল তালিকা</p>
                     </div>
                 </button>
-                <hr class="border-[#1e293b] my-1.5">
-                <button onclick="openFacebookSupport()" class="w-full flex items-center space-x-3 text-left px-3 py-2 text-xs rounded-lg bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-200 cursor-pointer">
-                    <i class="fa-brands fa-facebook text-base w-4"></i>
+                
+                <button onclick="openFacebookSupport()" class="menu-item-btn border-blue-500/20 bg-blue-600/5 text-blue-400 hover:bg-blue-600 hover:text-white hover:border-blue-500 shadow-sm mt-1">
+                    <i class="fa-brands fa-facebook text-base w-5 mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-6" class="font-bold">যোগাযোগ ও সাপোর্ট</p>
-                        <p id="dropdown-sub-6" class="text-[9px] opacity-80">ফেসবুকে আমাদের মেসেজ দিন</p>
+                        <p id="dropdown-txt-6" class="font-bold tracking-wide">যোগাযোগ ও সাপোর্ট</p>
+                        <p id="dropdown-sub-6" class="text-[9px] opacity-75 mt-0.5">ফেসবুকে আমাদের মেসেজ দিন</p>
                     </div>
                 </button>
             </div>
@@ -240,7 +272,7 @@
             fetchM3UPlaylist();
             setupOrientationFullscreen();
             setupMenuDropdown();
-            setupQualitySelector(); // ⚙️ কোয়ালিটি কন্ট্রোল ফাংশন রান
+            setupQualitySelector(); 
 
             document.getElementById('category-select').addEventListener('change', () => {
                 document.getElementById('search-input').value = "";
@@ -271,14 +303,11 @@
             document.body.classList.toggle('theme-light');
         }
 
-        // ⚙️ ডাইনামিক ভিডিও কোয়ালিটি রেজোলিউশন সিলেকশন মেনু
         function setupQualitySelector() {
             player.on('loadedmetadata', function() {
-                // পূর্বে তৈরি কোনো কোয়ালিটি বাটন থেকে থাকলে তা রিমুভ করি
                 const existingBtn = player.controlBar.el().querySelector('.vjs-quality-button');
                 if(existingBtn) existingBtn.remove();
 
-                // Video.js HLS টেক থেকে উপলব্ধ কোয়ালিটি লেভেল সংগ্রহ করা
                 let qualityLevels = [];
                 try {
                     const tech = player.tech({ IWillNotUseThisInPlugins: true });
@@ -287,7 +316,6 @@
                     }
                 } catch(e) { console.log("HLS Quality levels read error:", e); }
 
-                // যদি স্ট্রিমে মাল্টিপল রেজোলিউশন (কোয়ালিটি) থাকে, তবেই বাটন দেখাবে
                 if (qualityLevels && qualityLevels.length > 0) {
                     const controlBar = player.controlBar;
                     const qualityBtn = controlBar.addChild('button', {}, controlBar.children_.length - 1);
@@ -299,7 +327,6 @@
 
                     const menu = document.getElementById('vjs-q-menu');
                     
-                    // মেনু টগল ইভেন্ট
                     qualityBtn.on('click', (e) => {
                         e.stopPropagation();
                         menu.classList.toggle('show');
@@ -307,29 +334,25 @@
                     
                     document.addEventListener('click', () => menu.classList.remove('show'));
 
-                    // 'Auto' অপশন যোগ করা
                     const autoItem = document.createElement('button');
                     autoItem.className = 'vjs-quality-item vjs-selected';
                     autoItem.innerText = 'Auto';
                     autoItem.onclick = () => {
                         clearSelection();
                         autoItem.classList.add('vjs-selected');
-                        qualityLevels.forEach(level => level.enabled(true)); // সব লেভেল ট্রু মানে অটো মোড
+                        qualityLevels.forEach(level => level.enabled(true)); 
                     };
                     menu.appendChild(autoItem);
 
-                    // উপলব্ধ নির্দিষ্ট রেজোলিউশনগুলো (যেমন: 1080p, 720p, 480p) মেনুতে যোগ করা
                     qualityLevels.forEach((level, index) => {
                         const item = document.createElement('button');
                         item.className = 'vjs-quality-item';
-                        // রেজোলিউশন হাইট নির্ধারণ (হাইট না থাকলে ব্যান্ডউইথ অনুযায়ী নাম দেওয়া)
                         const label = level.height ? level.height + 'p' : Math.round(level.bandwidth / 1000) + 'kbps';
                         item.innerText = label;
                         
                         item.onclick = () => {
                             clearSelection();
                             item.classList.add('vjs-selected');
-                            // সিলেক্টেড কোয়ালিটি বাদে বাকি সব লেভেল সাময়িক ডিজেবল করা
                             qualityLevels.forEach((l, idx) => {
                                 l.enabled(idx === index);
                             });
@@ -348,7 +371,7 @@
         function toggleLanguage() {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
             const translations = {
-                bn: { selectCh: "একটি... চ্যানেল সিলেক্ট করুন", cat: "<i class='fa-solid fa-filter text-blue-400'></i> ক্যাটাগরি:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> চ্যানেল খুঁজুন:", input: "নাম লিখুন...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "লাইভ টিভি চ্যানেল বা খেলা দেখতে বা বাফারিং-এর কোনো সমস্যা হলে অনুগ্রহ করে আপনার ব্রাউজারের পেইজটি একবার রিফ্রেশ (Refresh) করে নিন অথবা অন্য কোনো ক্যাটাগরির চ্যানেল সিলেক্ট করে পুনরায় চেষ্টা করুন। নিরবচ্ছিন্ন প্রিমিয়াম স্ট্রিমিং অভিজ্ঞতা উপভোগ করার জন্য ধন্যবাদ!", d1: "প্লেলিস্ট রিফ্রেশ", ds1: "চ্যানেল তালিকা আপডেট করুন", d2: "থিম মুড পরিবর্তন", ds2: "ডার্ক / লাইট মোড টগল", d3: "ভাষা পরিবর্তন করুন", ds3: "ভাষা পরিবর্তন করুন (EN/BN)", d4: "পছন্দের চ্যানেল", ds4: "আপনার পছন্দের চ্যানেলগুলো দেখুন", d5: "সাম্প্রতিক চ্যানেল", ds5: "সম্প্রতি দেখা চ্যানেল তালিকা", d6: "যোগাযোগ ও সাপোর্ট", ds6: "ফেসবুকে আমাদের মেসেজ দিন" },
+                bn: { selectCh: "একটি চ্যানেল সিলেক্ট করুন", cat: "<i class='fa-solid fa-filter text-blue-400'></i> ক্যাটাগরি:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> চ্যানেল খুঁজুন:", input: "নাম লিখুন...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "লাইভ টিভি চ্যানেল বা খেলা দেখতে বা বাফারিং-এর কোনো সমস্যা হলে অনুগ্রহ করে আপনার ব্রাউজারের পেইজটি একবার রিফ্রেশ (Refresh) করে নিন অথবা অন্য কোনো ক্যাটাগরির চ্যানেল সিলেক্ট করে পুনরায় চেষ্টা করুন। নিরবচ্ছিন্ন প্রিমিয়াম স্ট্রিমিং অভিজ্ঞতা উপভোগ করার জন্য ধন্যবাদ!", d1: "Refresh Playlist", ds1: "চ্যানেল তালিকা আপডেট করুন", d2: "Theme Mode", ds2: "ডার্ক / লাইট মোড টগল", d3: "Language Change", ds3: "ভাষা পরিবর্তন করুন (EN/BN)", d4: "Favorite Channels", ds4: "আপনার পছন্দের চ্যানেলগুলো দেখুন", d5: "Recent Played", ds5: "সম্প্রতি দেখা চ্যানেল তালিকা", d6: "যোগাযোগ ও সাপোর্ট", ds6: "ফেসবুকে আমাদের মেসেজ দিন" },
                 en: { selectCh: "Select a channel to play", cat: "<i class='fa-solid fa-filter text-blue-400'></i> Category:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> Search Channel:", input: "Type name...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "If you face any issues watching live TV channels or games, or experience buffering, please refresh your browser page or select another category channel and try again. Thank you for enjoying a premium streaming experience!", d1: "Refresh Playlist", ds1: "Reload channel list from server", d2: "Theme Mode", ds2: "Toggle Dark / Light background", d3: "Language Change", ds3: "Switch language instantly (BN/EN)", d4: "Favorite Channels", ds4: "View your saved custom channels", d5: "Recent Played", ds5: "History of recently played streams", d6: "Contact & Support", ds6: "Message us on Facebook" }
             };
             const data = translations[currentLang];
@@ -431,7 +454,6 @@
         function toggleFavorite(e, channelName) { e.stopPropagation(); const idx = favoriteChannels.indexOf(channelName); if (idx > -1) { favoriteChannels.splice(idx, 1); } else { favoriteChannels.push(channelName); } localStorage.setItem('iptv_favorites', JSON.stringify(favoriteChannels)); filterAndRender(); }
         function addToRecents(channelName) { const idx = recentChannels.indexOf(channelName); if (idx > -1) { recentChannels.splice(idx, 1); } recentChannels.unshift(channelName); if (recentChannels.length > 15) recentChannels.pop(); localStorage.setItem('iptv_recents', JSON.stringify(recentChannels)); }
 
-        // ফিল্টারিং ও রেন্ডারিং লজিক (শিমার ভ্যানিশ ফিক্স সহ)
         function filterAndRender() {
             const selectedCategory = document.getElementById('category-select').value;
             const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
