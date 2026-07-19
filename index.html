@@ -31,7 +31,16 @@
         body.theme-light .menu-item-btn { background-color: #f8fafc !important; border-color: #e2e8f0 !important; color: #334155 !important; }
         body.theme-light .menu-item-btn:hover { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #000000 !important; }
 
-        /* 🎛️ নতুন ড্রপডাউন মেনু ও স্পেসিফিক বাটন স্টাইল */
+        /* 🆕 লাইট থিমে চ্যানেল কার্ডগুলোর কাস্টম ওভাররাইড স্টাইল */
+        body.theme-light .channel-card { background-color: #ffffff !important; border-color: #e2e8f0 !important; box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important; }
+        body.theme-light .channel-card h4 { color: #334155 !important; }
+        body.theme-light .channel-card:hover { background-color: #f1f5f9 !important; border-color: #3b82f6 !important; }
+        body.theme-light .channel-card:hover h4 { color: #000000 !important; }
+        body.theme-light .channel-card .bg-\[\#0b111e\] { background-color: #f8fafc !important; border-color: #e2e8f0 !important; }
+        body.theme-light .channel-card.active-channel { border-color: #3b82f6 !important; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important; box-shadow: 0 0 12px rgba(59, 130, 246, 0.2) !important; }
+        body.theme-light .channel-card.active-channel h4 { color: #1e3a8a !important; }
+
+        /* 🎛️ ড্রপডাউন মেনু ও স্পেসিফিক বাটন স্টাইল */
         .menu-item-btn {
             width: 100%;
             display: flex;
@@ -48,7 +57,6 @@
         }
         .menu-item-btn:last-child { margin-bottom: 0; }
         
-        /* হোভার এবং একটিভ ক্লিকের ভিজ্যুয়াল ইফেক্ট */
         .menu-item-btn:hover {
             background-color: rgba(30, 41, 59, 0.9);
             border-color: rgba(59, 130, 246, 0.5);
@@ -62,10 +70,10 @@
         }
 
         /* ⚙️ কাস্টম কোয়ালিটি বাটন ও মেনু স্টাইল */
-        .vjs-quality-button { cursor: pointer; position: relative; display: flex; items-center: center; justify-content: center; }
-        .vjs-quality-menu { display: none; position: absolute; bottom: 40px; right: 0; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 8px; padding: 6px 0; min-width: 100px; z-index: 99; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
+        .vjs-quality-button { cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; width: 3em !important; }
+        .vjs-quality-menu { display: none; position: absolute; bottom: 45px; right: 5px; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 8px; padding: 6px 0; min-width: 110px; z-index: 9999; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
         .vjs-quality-menu.show { display: block; }
-        .vjs-quality-item { padding: 6px 14px; font-size: 11px; color: #cbd5e1; text-align: left; font-weight: 600; width: 100%; display: block; transition: all 0.2s; }
+        .vjs-quality-item { padding: 8px 14px; font-size: 11px; color: #cbd5e1; text-align: left; font-weight: 600; width: 100%; display: block; transition: all 0.2s; background: none; border: none; cursor: pointer; }
         .vjs-quality-item:hover { background: #1e293b; color: #fff; }
         .vjs-quality-item.vjs-selected { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
 
@@ -105,12 +113,12 @@
                 <i class="fa-solid fa-sliders text-[16px] drop-shadow-md"></i>
             </button>
 
-            <!-- 🎛️ নতুন বর্ডার ও স্পষ্ট স্ট্রাকচারের ড্রপডাউন মেনু বাটনসমূহ -->
-            <div id="menu-dropdown" class="hidden absolute left-0 mt-3 w-60 bg-[#0f172a]/95 backdrop-blur-md border border-[#1e293b] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 z-50 animate-fade-in">
+            <!-- 🎛️ ড্রপডাউন মেনু বাটনসমূহ -->
+            <div id="menu-dropdown" class="hidden absolute left-0 mt-3 w-60 bg-[#0f172a]/95 backdrop-blur-md border border-[#1e293b] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] p-2.5 z-50">
                 <button onclick="refreshPlaylistData()" class="menu-item-btn text-gray-300">
                     <i class="fa-solid fa-sync text-emerald-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-1" class="font-bold tracking-wide">Refresh Playlist</p>
+                        <p id="dropdown-txt-1" class="font-bold tracking-wide">প্লেলিস্ট রিফ্রেশ</p>
                         <p id="dropdown-sub-1" class="text-[9px] text-gray-500 mt-0.5">চ্যানেল তালিকা আপডেট করুন</p>
                     </div>
                 </button>
@@ -118,15 +126,15 @@
                 <button onclick="toggleTheme()" class="menu-item-btn text-gray-300">
                     <i class="fa-solid fa-circle-half-stroke text-indigo-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-2" class="font-bold tracking-wide">Theme Mode</p>
-                        <p id="dropdown-sub-2" class="text-[9px] text-gray-500 mt-0.5">ডার্ক / লাইট মোড টগল</p>
+                        <p id="dropdown-txt-2" class="font-bold tracking-wide">থিম মোড</p>
+                        <p id="dropdown-sub-2" class="text-[9px] text-gray-500 mt-0.5">ডার্ক / লাইট মোড পরিবর্তন</p>
                     </div>
                 </button>
                 
                 <button onclick="toggleLanguage()" class="menu-item-btn text-gray-300">
                     <i class="fa-solid fa-language text-rose-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-3" class="font-bold tracking-wide">Language Change</p>
+                        <p id="dropdown-txt-3" class="font-bold tracking-wide">ভাষা পরিবর্তন</p>
                         <p id="dropdown-sub-3" class="text-[9px] text-gray-500 mt-0.5">ভাষা পরিবর্তন করুন (EN/BN)</p>
                     </div>
                 </button>
@@ -134,7 +142,7 @@
                 <button onclick="filterByFavorites()" class="menu-item-btn text-gray-300">
                     <i class="fa-solid fa-star text-amber-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-4" class="font-bold tracking-wide">Favorite Channels</p>
+                        <p id="dropdown-txt-4" class="font-bold tracking-wide">পছন্দের চ্যানেল</p>
                         <p id="dropdown-sub-4" class="text-[9px] text-gray-500 mt-0.5">আপনার পছন্দের চ্যানেলগুলো দেখুন</p>
                     </div>
                 </button>
@@ -142,7 +150,7 @@
                 <button onclick="filterByRecents()" class="menu-item-btn text-gray-300">
                     <i class="fa-solid fa-clock-rotate-left text-cyan-400 w-5 text-sm mr-2.5"></i>
                     <div>
-                        <p id="dropdown-txt-5" class="font-bold tracking-wide">Recent Played</p>
+                        <p id="dropdown-txt-5" class="font-bold tracking-wide">সাম্প্রতিক চ্যানেল</p>
                         <p id="dropdown-sub-5" class="text-[9px] text-gray-500 mt-0.5">সম্প্রতি দেখা চ্যানেল তালিকা</p>
                     </div>
                 </button>
@@ -168,7 +176,7 @@
         <div class="flex items-center space-x-4 text-sm text-gray-400">
             <span id="badge-iptv" class="hidden md:inline font-medium tracking-wide text-xs bg-[#1e293b] px-2 py-1 rounded border border-[#334155]">Premium IPTV</span>
             <span class="text-blue-400 text-xs font-bold tracking-wide select-none">
-                <span id="txt-total-ch">Total CH</span>: <span id="channel-count" class="text-slate-400 font-black">0</span>
+                <span id="txt-total-ch">মোট চ্যানেল</span>: <span id="channel-count" class="text-slate-400 font-black">0</span>
             </span>
         </div>
     </header>
@@ -177,7 +185,7 @@
     <div id="notice-bar" class="w-full bg-[#131c31] border-b border-[#1e293b] px-4 py-1.5 flex items-center gap-3 z-40 shrink-0 h-[38px] overflow-hidden">
         <div class="flex items-center space-x-1.5 text-white text-[10px] font-black uppercase tracking-wider bg-red-600 px-2 py-1 rounded-md border border-red-500 whitespace-nowrap z-10 shadow-md">
             <i class="fa-solid fa-bullhorn text-[9px] animate-bounce"></i>
-            <span id="txt-notice-tag">Notice</span>
+            <span id="txt-notice-tag">নোটিশ</span>
         </div>
         <div class="flex-1 notice-container text-[13px] text-amber-300 font-semibold tracking-wide">
             <div id="scroller-msg" class="notice-scroller leading-none py-0.5">
@@ -197,7 +205,7 @@
                         <span id="current-channel-title" class="font-black text-white tracking-wide text-sm md:text-base drop-shadow transition-all duration-300">একটি চ্যানেল সিলেক্ট করুন</span>
                     </div>
                     <div class="flex items-center space-x-2 shrink-0 select-none">
-                        <span id="txt-live-badge" class="text-[10px] bg-red-600 text-white px-2 py-1 rounded font-black uppercase tracking-widest border border-red-500 shadow-sm animate-pulse">Live</span>
+                        <span id="txt-live-badge" class="text-[10px] bg-red-600 text-white px-2 py-1 rounded font-black uppercase tracking-widest border border-red-500 shadow-sm animate-pulse">লাইভ</span>
                     </div>
                 </div>
                 
@@ -216,7 +224,7 @@
                         <i class="fa-solid fa-filter text-blue-400"></i> ক্যাটাগরি:
                     </label>
                     <select id="category-select" class="w-full bg-[#1e293b] text-gray-200 border border-[#334155] rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors cursor-pointer font-medium">
-                        <option value="all">All Channels</option>
+                        <option value="all">সব চ্যানেল</option>
                     </select>
                 </div>
 
@@ -232,13 +240,15 @@
             </div>
 
             <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 content-start">
-                <!-- ৯টি লোডিং শিমার ইফেক্ট -->
+                <!-- 🔄 ৯টি লোডিং শিমার ইফেক্টস -->
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-full h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-5/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-3/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-4/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
+                
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-full h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-5/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-3/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-4/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
+                
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-full h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-5/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-3/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-4/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
@@ -259,6 +269,41 @@
         let favoriteChannels = JSON.parse(localStorage.getItem('iptv_favorites')) || [];
         let recentChannels = JSON.parse(localStorage.getItem('iptv_recents')) || [];
 
+        const translations = {
+            bn: { 
+                selectCh: "একটি চ্যানেল সিলেক্ট করুন", 
+                cat: "<i class='fa-solid fa-filter text-blue-400'></i> ক্যাটাগরি:", 
+                src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> চ্যানেল খুঁজুন:", 
+                input: "নাম লিখুন...", 
+                total: "মোট চ্যানেল", 
+                notice: "নোটিশ", 
+                liveBadge: "লাইভ", 
+                msg: "লাইভ টিভি চ্যানেল বা খেলা দেখতে বা বাফারিং-এর কোনো সমস্যা হলে অনুগ্রহ করে আপনার ব্রাউজারের পেইজটি একবার রিফ্রেশ (Refresh) করে নিন অথবা অন্য কোনো ক্যাটাগরির চ্যানেল সিলেক্ট করে পুনরায় চেষ্টা করুন। নিরবচ্ছিন্ন প্রিমিয়াম স্ট্রিমিং অভিজ্ঞতা উপভোগ করার জন্য ধন্যবাদ!", 
+                d1: "প্লেলিস্ট রিফ্রেশ", ds1: "চ্যানেল তালিকা আপডেট করুন", 
+                d2: "থিম মোড", ds2: "ডার্ক / লাইট মোড পরিবর্তন", 
+                d3: "ভাষা পরিবর্তন", ds3: "ভাষা পরিবর্তন করুন (EN/BN)", 
+                d4: "পছন্দের চ্যানেল", ds4: "আপনার পছন্দের চ্যানেলগুলো দেখুন", 
+                d5: "সাম্প্রতিক চ্যানেল", ds5: "সম্প্রতি দেখা চ্যানেল তালিকা", 
+                d6: "যোগাযোগ ও সাপোর্ট", ds6: "ফেসবুকে আমাদের মেসেজ দিন" 
+            },
+            en: { 
+                selectCh: "Select a channel to play", 
+                cat: "<i class='fa-solid fa-filter text-blue-400'></i> Category:", 
+                src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> Search Channel:", 
+                input: "Type name...", 
+                total: "Total CH", 
+                notice: "Notice", 
+                liveBadge: "Live", 
+                msg: "If you face any issues watching live TV channels or games, or experience buffering, please refresh your browser page or select another category channel and try again. Thank you for enjoying a premium streaming experience!", 
+                d1: "Refresh Playlist", ds1: "Reload channel list from server", 
+                d2: "Theme Mode", ds2: "Toggle Dark / Light background", 
+                d3: "Language Change", ds3: "Switch language instantly (BN/EN)", 
+                d4: "Favorite Channels", ds4: "View your saved custom channels", 
+                d5: "Recent Played", ds5: "History of recently played streams", 
+                d6: "Contact & Support", ds6: "Message us on Facebook" 
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             player = videojs('iptv-player', { 
                 fluid: false, 
@@ -269,6 +314,7 @@
                 preferFullWindow: true
             });
             
+            updateUIStrings();
             fetchM3UPlaylist();
             setupOrientationFullscreen();
             setupMenuDropdown();
@@ -297,10 +343,12 @@
 
         function refreshPlaylistData() {
             fetchM3UPlaylist();
+            document.getElementById('menu-dropdown').classList.add('hidden');
         }
 
         function toggleTheme() {
             document.body.classList.toggle('theme-light');
+            document.getElementById('menu-dropdown').classList.add('hidden');
         }
 
         function setupQualitySelector() {
@@ -370,34 +418,51 @@
 
         function toggleLanguage() {
             currentLang = currentLang === 'bn' ? 'en' : 'bn';
-            const translations = {
-                bn: { selectCh: "একটি চ্যানেল সিলেক্ট করুন", cat: "<i class='fa-solid fa-filter text-blue-400'></i> ক্যাটাগরি:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> চ্যানেল খুঁজুন:", input: "নাম লিখুন...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "লাইভ টিভি চ্যানেল বা খেলা দেখতে বা বাফারিং-এর কোনো সমস্যা হলে অনুগ্রহ করে আপনার ব্রাউজারের পেইজটি একবার রিফ্রেশ (Refresh) করে নিন অথবা অন্য কোনো ক্যাটাগরির চ্যানেল সিলেক্ট করে পুনরায় চেষ্টা করুন। নিরবচ্ছিন্ন প্রিমিয়াম স্ট্রিমিং অভিজ্ঞতা উপভোগ করার জন্য ধন্যবাদ!", d1: "Refresh Playlist", ds1: "চ্যানেল তালিকা আপডেট করুন", d2: "Theme Mode", ds2: "ডার্ক / লাইট মোড টগল", d3: "Language Change", ds3: "ভাষা পরিবর্তন করুন (EN/BN)", d4: "Favorite Channels", ds4: "আপনার পছন্দের চ্যানেলগুলো দেখুন", d5: "Recent Played", ds5: "সম্প্রতি দেখা চ্যানেল তালিকা", d6: "যোগাযোগ ও সাপোর্ট", ds6: "ফেসবুকে আমাদের মেসেজ দিন" },
-                en: { selectCh: "Select a channel to play", cat: "<i class='fa-solid fa-filter text-blue-400'></i> Category:", src: "<i class='fa-solid fa-magnifying-glass text-amber-400'></i> Search Channel:", input: "Type name...", total: "Total CH", notice: "Notice", liveBadge: "Live", msg: "If you face any issues watching live TV channels or games, or experience buffering, please refresh your browser page or select another category channel and try again. Thank you for enjoying a premium streaming experience!", d1: "Refresh Playlist", ds1: "Reload channel list from server", d2: "Theme Mode", ds2: "Toggle Dark / Light background", d3: "Language Change", ds3: "Switch language instantly (BN/EN)", d4: "Favorite Channels", ds4: "View your saved custom channels", d5: "Recent Played", ds5: "History of recently played streams", d6: "Contact & Support", ds6: "Message us on Facebook" }
-            };
+            updateUIStrings();
+            
+            const currentSelectedValue = document.getElementById('category-select').value;
+            populateCategories(); 
+            document.getElementById('category-select').value = currentSelectedValue;
+            filterAndRender(); 
+            
+            document.getElementById('menu-dropdown').classList.add('hidden');
+        }
+
+        function updateUIStrings() {
             const data = translations[currentLang];
+            
             if(!activeChannelData) { document.getElementById('current-channel-title').innerText = data.selectCh; } 
             else if(activeChannelData && activeChannelData.name) { document.getElementById('current-channel-title').innerText = activeChannelData.name; }
-            document.getElementById('lbl-category').innerHTML = data.cat; document.getElementById('lbl-search').innerHTML = data.src;
-            document.getElementById('search-input').placeholder = data.input; document.getElementById('txt-total-ch').innerText = data.total;
-            document.getElementById('txt-notice-tag').innerText = data.notice; document.getElementById('txt-live-badge').innerText = data.liveBadge;
+            
+            document.getElementById('lbl-category').innerHTML = data.cat; 
+            document.getElementById('lbl-search').innerHTML = data.src;
+            document.getElementById('search-input').placeholder = data.input; 
+            document.getElementById('txt-total-ch').innerText = data.total;
+            document.getElementById('txt-notice-tag').innerText = data.notice; 
+            document.getElementById('txt-live-badge').innerText = data.liveBadge;
             document.getElementById('scroller-msg').innerText = data.msg;
-            document.getElementById('dropdown-txt-1').innerText = data.d1; document.getElementById('dropdown-sub-1').innerText = data.ds1;
-            document.getElementById('dropdown-txt-2').innerText = data.d2; document.getElementById('dropdown-sub-2').innerText = data.ds2;
-            document.getElementById('dropdown-txt-3').innerText = data.d3; document.getElementById('dropdown-sub-3').innerText = data.ds3;
-            document.getElementById('dropdown-txt-4').innerText = data.d4; document.getElementById('dropdown-sub-4').innerText = data.ds4;
-            document.getElementById('dropdown-txt-5').innerText = data.d5; document.getElementById('dropdown-sub-5').innerText = data.ds5;
-            document.getElementById('dropdown-txt-6').innerText = data.d6; document.getElementById('dropdown-sub-6').innerText = data.ds6;
-            const currentSelectedValue = document.getElementById('category-select').value;
-            populateCategories(); document.getElementById('category-select').value = currentSelectedValue;
-            filterAndRender(); document.getElementById('menu-dropdown').classList.add('hidden');
+            
+            document.getElementById('dropdown-txt-1').innerText = data.d1; 
+            document.getElementById('dropdown-sub-1').innerText = data.ds1;
+            document.getElementById('dropdown-txt-2').innerText = data.d2; 
+            document.getElementById('dropdown-sub-2').innerText = data.ds2;
+            document.getElementById('dropdown-txt-3').innerText = data.d3; 
+            document.getElementById('dropdown-sub-3').innerText = data.ds3;
+            document.getElementById('dropdown-txt-4').innerText = data.d4; 
+            document.getElementById('dropdown-sub-4').innerText = data.ds4;
+            document.getElementById('dropdown-txt-5').innerText = data.d5; 
+            document.getElementById('dropdown-sub-5').innerText = data.ds5;
+            document.getElementById('dropdown-txt-6').innerText = data.d6; 
+            document.getElementById('dropdown-sub-6').innerText = data.ds6;
         }
 
         function setupOrientationFullscreen() {
             const handleOrientationChange = () => {
-                const isLandscape = window.matchMedia("(orientation: landscape)").matches || (window.innerWidth > window.innerHeight);
                 if (window.innerWidth < 1024) { 
-                    if (isLandscape) { if (player && !player.isFullscreen()) { player.enterFullWindow(); } } 
-                    else { if (player && player.isFullscreen()) { player.exitFullWindow(); } }
+                    const isLandscape = window.matchMedia("(orientation: landscape)").matches || (window.innerWidth > window.innerHeight);
+                    if (isLandscape && player && !player.isFullscreen()) { player.enterFullWindow(); } 
+                } else { 
+                    if (player && player.isFullscreen()) { player.exitFullWindow(); } 
                 }
             };
             window.addEventListener("resize", () => { setTimeout(handleOrientationChange, 100); });
@@ -449,9 +514,11 @@
             categories.forEach(category => { if(category) { const option = document.createElement('option'); option.value = category; option.innerText = category; select.appendChild(option); } });
         }
 
-        function filterByFavorites() { document.getElementById('category-select').value = "__favorites__"; document.getElementById('search-input').value = ""; filterAndRender(); }
-        function filterByRecents() { document.getElementById('category-select').value = "__recents__"; document.getElementById('search-input').value = ""; filterAndRender(); }
+        function filterByFavorites() { document.getElementById('category-select').value = "__favorites__"; document.getElementById('search-input').value = ""; filterAndRender(); document.getElementById('menu-dropdown').classList.add('hidden'); }
+        function filterByRecents() { document.getElementById('category-select').value = "__recents__"; document.getElementById('search-input').value = ""; filterAndRender(); document.getElementById('menu-dropdown').classList.add('hidden'); }
+        
         function toggleFavorite(e, channelName) { e.stopPropagation(); const idx = favoriteChannels.indexOf(channelName); if (idx > -1) { favoriteChannels.splice(idx, 1); } else { favoriteChannels.push(channelName); } localStorage.setItem('iptv_favorites', JSON.stringify(favoriteChannels)); filterAndRender(); }
+        
         function addToRecents(channelName) { const idx = recentChannels.indexOf(channelName); if (idx > -1) { recentChannels.splice(idx, 1); } recentChannels.unshift(channelName); if (recentChannels.length > 15) recentChannels.pop(); localStorage.setItem('iptv_recents', JSON.stringify(recentChannels)); }
 
         function filterAndRender() {
