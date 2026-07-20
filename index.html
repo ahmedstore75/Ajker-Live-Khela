@@ -26,12 +26,10 @@
         body.theme-light #sidebar-wrapper label { color: #64748b !important; }
         body.theme-light #category-select, body.theme-light #search-input { background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
         
-        /* লাইট থিমে ড্রপডাউন ও বাটন এডজাস্টমেন্ট */
         body.theme-light #menu-dropdown { background-color: #ffffff !important; border-color: #cbd5e1 !important; }
         body.theme-light .menu-item-btn { background-color: #f8fafc !important; border-color: #e2e8f0 !important; color: #334155 !important; }
         body.theme-light .menu-item-btn:hover { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #000000 !important; }
 
-        /* 🆕 লাইট থিমে চ্যানেল কার্ডগুলোর কাস্টম ওভাররাইড স্টাইল */
         body.theme-light .channel-card { background-color: #ffffff !important; border-color: #e2e8f0 !important; box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important; }
         body.theme-light .channel-card h4 { color: #334155 !important; }
         body.theme-light .channel-card:hover { background-color: #f1f5f9 !important; border-color: #3b82f6 !important; }
@@ -40,7 +38,6 @@
         body.theme-light .channel-card.active-channel { border-color: #3b82f6 !important; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important; box-shadow: 0 0 12px rgba(59, 130, 246, 0.2) !important; }
         body.theme-light .channel-card.active-channel h4 { color: #1e3a8a !important; }
 
-        /* 🎛️ ড্রপডাউন মেনু ও স্পেসিফিক বাটন স্টাইল */
         .menu-item-btn {
             width: 100%;
             display: flex;
@@ -56,26 +53,8 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .menu-item-btn:last-child { margin-bottom: 0; }
-        
-        .menu-item-btn:hover {
-            background-color: rgba(30, 41, 59, 0.9);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
-        }
-        .menu-item-btn:active {
-            transform: scale(0.96);
-            background-color: rgba(15, 23, 42, 0.8);
-            border-color: rgba(59, 130, 246, 0.7);
-        }
-
-        /* ⚙️ কাস্টম কোয়ালিটি বাটন ও মেনু স্টাইল */
-        .vjs-quality-button { cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; width: 3em !important; }
-        .vjs-quality-menu { display: none; position: absolute; bottom: 45px; right: 5px; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 8px; padding: 6px 0; min-width: 110px; z-index: 9999; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
-        .vjs-quality-menu.show { display: block; }
-        .vjs-quality-item { padding: 8px 14px; font-size: 11px; color: #cbd5e1; text-align: left; font-weight: 600; width: 100%; display: block; transition: all 0.2s; background: none; border: none; cursor: pointer; }
-        .vjs-quality-item:hover { background: #1e293b; color: #fff; }
-        .vjs-quality-item.vjs-selected { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .menu-item-btn:hover { background-color: rgba(30, 41, 59, 0.9); border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transform: translateY(-1px); }
+        .menu-item-btn:active { transform: scale(0.96); background-color: rgba(15, 23, 42, 0.8); border-color: rgba(59, 130, 246, 0.7); }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
@@ -86,7 +65,17 @@
         .channel-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .channel-card.active-channel { border-color: #3b82f6 !important; background: linear-gradient(135deg, #1e293b 0%, #111a2e 100%) !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.25), inset 0 0 10px rgba(59, 130, 246, 0.1); }
 
-        .video-js.vjs-full-window { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 99999 !important; background-color: #000 !important; }
+        /* 🔍 ভিডিও প্লেয়ার জুম ও অটো-ফিট রুলস */
+        .video-js video { transition: all 0.2s ease-in-out !important; }
+        
+        .video-js.vjs-fullscreen video, 
+        .video-js.vjs-full-window video,
+        .vjs-forced-fullscreen video { 
+            object-fit: fill !important; 
+            width: 100% !important; 
+            height: 100% !important; 
+        }
+
         .notice-container { display: flex; overflow: hidden; width: 100%; white-space: nowrap; }
         .notice-scroller { display: inline-block; padding-left: 100%; animation: marqueeEffect 32s linear infinite; }
         
@@ -95,12 +84,13 @@
         .shimmer-bg { background: linear-gradient(90deg, #131c31 25%, #223152 50%, #131c31 75%); background-size: 200% 100%; animation: premiumShimmer 1.8s infinite linear; }
         .shimmer-element { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: premiumShimmer 1.8s infinite linear; }
 
+        /* 📱 ল্যান্ডস্কেপ মোডে লেআউটকে ফুলস্ক্রিন করার কাস্টম সিএসএস */
         @media (max-width: 1023px) and (orientation: landscape) {
             html, body { overflow: hidden !important; height: 100vh !important; }
             header, #notice-bar, #sidebar-wrapper, #title-area { display: none !important; }
             main { height: 100vh !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; width: 100vw !important; }
             #player-wrapper, #player-wrapper > div, .aspect-video { width: 100vw !important; height: 100vh !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin: 0 !important; }
-            .video-js, .video-js .vjs-tech, .video-js video { width: 100vw !important; height: 100vh !important; object-fit: fill !important; transition: none !important; }
+            .video-js, .video-js .vjs-tech, .video-js video { width: 100vw !important; height: 100vh !important; object-fit: fill !important; }
         }
     </style>
 </head>
@@ -240,15 +230,13 @@
             </div>
 
             <div id="channels-list" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 content-start">
-                <!-- 🔄 ৯টি লোডিং শিমার ইফেক্টস -->
+                <!-- 🔄 লোডিং শিমার ইফেক্টস (এখানে ৯ টি শিমার কার্ড রাখা হয়েছে) -->
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-full h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-5/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-3/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-4/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
-                
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-full h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-5/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-3/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-4/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
-                
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-full h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-5/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-3/6 h-2.5 shimmer-element rounded-md"></div></div>
                 <div class="shimmer-bg border border-[#1e293b] rounded-xl p-3 flex flex-col items-center justify-between h-36 opacity-80"><div class="w-16 h-16 shimmer-element rounded-lg mb-2"></div><div class="w-4/6 h-3 shimmer-element rounded-md mb-1"></div><div class="w-4/6 h-2.5 shimmer-element rounded-md"></div></div>
@@ -311,14 +299,13 @@
                 controls: true, 
                 liveui: true,
                 poster: defaultPosterUrl,
-                preferFullWindow: true
+                preferFullWindow: false 
             });
             
             updateUIStrings();
             fetchM3UPlaylist();
             setupOrientationFullscreen();
             setupMenuDropdown();
-            setupQualitySelector(); 
 
             document.getElementById('category-select').addEventListener('change', () => {
                 document.getElementById('search-input').value = "";
@@ -349,71 +336,6 @@
         function toggleTheme() {
             document.body.classList.toggle('theme-light');
             document.getElementById('menu-dropdown').classList.add('hidden');
-        }
-
-        function setupQualitySelector() {
-            player.on('loadedmetadata', function() {
-                const existingBtn = player.controlBar.el().querySelector('.vjs-quality-button');
-                if(existingBtn) existingBtn.remove();
-
-                let qualityLevels = [];
-                try {
-                    const tech = player.tech({ IWillNotUseThisInPlugins: true });
-                    if (tech && tech.vhs && tech.vhs.representations) {
-                        qualityLevels = tech.vhs.representations();
-                    }
-                } catch(e) { console.log("HLS Quality levels read error:", e); }
-
-                if (qualityLevels && qualityLevels.length > 0) {
-                    const controlBar = player.controlBar;
-                    const qualityBtn = controlBar.addChild('button', {}, controlBar.children_.length - 1);
-                    
-                    qualityBtn.addClass('vjs-quality-button');
-                    qualityBtn.addClass('vjs-control');
-                    qualityBtn.el().innerHTML = `<i class="fa-solid fa-gear text-sm mt-3.5"></i><div class="vjs-quality-menu" id="vjs-q-menu"></div>`;
-                    qualityBtn.el().title = "Change Video Quality";
-
-                    const menu = document.getElementById('vjs-q-menu');
-                    
-                    qualityBtn.on('click', (e) => {
-                        e.stopPropagation();
-                        menu.classList.toggle('show');
-                    });
-                    
-                    document.addEventListener('click', () => menu.classList.remove('show'));
-
-                    const autoItem = document.createElement('button');
-                    autoItem.className = 'vjs-quality-item vjs-selected';
-                    autoItem.innerText = 'Auto';
-                    autoItem.onclick = () => {
-                        clearSelection();
-                        autoItem.classList.add('vjs-selected');
-                        qualityLevels.forEach(level => level.enabled(true)); 
-                    };
-                    menu.appendChild(autoItem);
-
-                    qualityLevels.forEach((level, index) => {
-                        const item = document.createElement('button');
-                        item.className = 'vjs-quality-item';
-                        const label = level.height ? level.height + 'p' : Math.round(level.bandwidth / 1000) + 'kbps';
-                        item.innerText = label;
-                        
-                        item.onclick = () => {
-                            clearSelection();
-                            item.classList.add('vjs-selected');
-                            qualityLevels.forEach((l, idx) => {
-                                l.enabled(idx === index);
-                            });
-                        };
-                        menu.appendChild(item);
-                    });
-
-                    function clearSelection() {
-                        const items = menu.querySelectorAll('.vjs-quality-item');
-                        items.forEach(i => i.classList.remove('vjs-selected'));
-                    }
-                }
-            });
         }
 
         function toggleLanguage() {
@@ -460,12 +382,29 @@
             const handleOrientationChange = () => {
                 if (window.innerWidth < 1024) { 
                     const isLandscape = window.matchMedia("(orientation: landscape)").matches || (window.innerWidth > window.innerHeight);
-                    if (isLandscape && player && !player.isFullscreen()) { player.enterFullWindow(); } 
-                } else { 
-                    if (player && player.isFullscreen()) { player.exitFullWindow(); } 
+                    const playerEl = player.el();
+                    
+                    if (isLandscape && player) { 
+                        if (!player.isFullscreen()) {
+                            player.requestFullscreen();
+                        }
+                        playerEl.classList.add('vjs-forced-fullscreen');
+                    } else if (player) {
+                        playerEl.classList.remove('vjs-forced-fullscreen');
+                    }
                 }
             };
-            window.addEventListener("resize", () => { setTimeout(handleOrientationChange, 100); });
+            
+            player.on('fullscreenchange', () => {
+                const playerEl = player.el();
+                if (player.isFullscreen()) {
+                    playerEl.classList.add('vjs-forced-fullscreen');
+                } else {
+                    playerEl.classList.remove('vjs-forced-fullscreen');
+                }
+            });
+
+            window.addEventListener("resize", () => { setTimeout(handleOrientationChange, 150); });
         }
 
         async function fetchM3UPlaylist() {
