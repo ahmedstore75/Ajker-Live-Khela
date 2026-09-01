@@ -15,13 +15,15 @@ USER_AGENTS = [
     'okhttp/5.1.0'
 ]
 
+# ডিফল্ট কুকি (এপিআই থেকে কুকি না আসলে এটি ব্যবহৃত হবে)
+DEFAULT_COOKIE = "Edge-Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9vd3Jjb3ZjcnB5LmdwY2RuLm5ldC9icGstdHYvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRWRnZVRpbWUiOjE3ODgyNTMyMzd9fX1dfQ;Edge-Signature=V3G6GBiA2N6wlM8aLqfdsv1kOW8Z1pxEZgL9GwEuiIs"
+
 def get_random_user_agent():
     return random.choice(USER_AGENTS)
 
 def generate_playlists():
-    print("Fetching channels and dynamic cookies...")
+    print("Fetching channels and applying cookies...")
     raw_channels = []
-
     session = requests.Session()
 
     for channel_id in range(100, 411):
@@ -30,7 +32,6 @@ def generate_playlists():
             headers = {
                 'User-Agent': get_random_user_agent(),
                 'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'en-US,en;q=0.9',
                 'Origin': 'https://akashgo.com',
                 'Referer': 'https://akashgo.com/',
                 'x-platform': 'web',
@@ -44,15 +45,11 @@ def generate_playlists():
 
             res_data = response.json()
             data = res_data.get('data', {})
-            
-            # ডাটা অবজেক্ট বা চ্যানেল মেটা থেকে ডাটা খোঁজা
             channel_meta = data.get('channelMeta') if isinstance(data, dict) and 'channelMeta' in data else data
 
             if isinstance(channel_meta, dict):
                 channel_name = (channel_meta.get('channelName') or channel_meta.get('name') or channel_meta.get('title') or '').strip()
                 logo_url = channel_meta.get('logo') or channel_meta.get('poster') or ""
-                
-                # একাধিক ফিল্ডের মধ্যে স্ট্রিম ইউআরএল চেক
                 stream_url = (
                     channel_meta.get('nonProtectedHlsConsumerUrl') or 
                     channel_meta.get('protectedHlsConsumerUrl') or 
@@ -60,18 +57,14 @@ def generate_playlists():
                     channel_meta.get('url') or 
                     data.get('streamUrl') or ""
                 )
-                
                 category = channel_meta.get('category') or "General"
 
-                # ডায়নামিক কুকি এবং টোকেন এক্সট্র্যাকশন
+                # ১. এপিআই রেসপন্স থেকে কুকি খোঁজা
                 dynamic_cookie = ""
-                
-                # ১. সেসন/রেসপন্স হেডার কুকি চেক
                 set_cookie = response.headers.get('set-cookie')
                 if set_cookie:
                     dynamic_cookie = set_cookie.split(';')[0]
 
-                # ২. রেসপন্স ডাটা থেকে টোকেন/পলিসি চেক
                 if not dynamic_cookie:
                     edge_policy = channel_meta.get('edgePolicy') or data.get('edgePolicy')
                     edge_sig = channel_meta.get('edgeSignature') or data.get('edgeSignature')
@@ -84,16 +77,18 @@ def generate_playlists():
                     elif channel_meta.get('cookie'):
                         dynamic_cookie = channel_meta.get('cookie')
 
+                # ২. যদি কোনো কুকি না পাওয়া যায়, তবে বাধ্যতামূলক ডিফল্ট কুকি বসানো
+                final_cookie = dynamic_cookie if dynamic_cookie else DEFAULT_COOKIE
+
                 if stream_url and channel_name:
                     raw_channels.append({
                         'name': channel_name,
                         'logo': logo_url,
                         'stream_url': stream_url,
-                        'cookie': dynamic_cookie,
+                        'cookie': final_cookie,
                         'category': category
                     })
-                    print(f"[✓] Added: {channel_name} | Cookie: {'Yes' if dynamic_cookie else 'No'}")
-        except Exception as e:
+        except Exception:
             pass
 
     if not raw_channels:
@@ -118,12 +113,11 @@ def generate_playlists():
 
     unique_channels.sort(key=sort_key)
 
-    # ১. M3U তৈরি
+    # ১. M3U তৈরি (বাধ্যতামূলক কুকি হেডারসহ)
     m3u_content = "#EXTM3U\n\n"
     for ch in unique_channels:
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
-        if ch["cookie"]:
-            m3u_content += f'#EXTHTTP:{{"cookie":"{ch["cookie"]}"}}\n'
+        m3u_content += f'#EXTHTTP:{{"cookie":"{ch["cookie"]}"}}\n'
         m3u_content += f'{ch["stream_url"]}\n\n'
 
     with open('akash_go.m3u', 'w', encoding='utf-8') as f:
@@ -155,7 +149,7 @@ def generate_playlists():
     with open('playlist.json', 'w', encoding='utf-8') as f:
         json.dump(json_structure, f, indent=2, ensure_ascii=False)
 
-    print(f"Total {len(unique_channels)} channels saved successfully!")
+    print(f"Total {len(unique_channels)} channels saved successfully with cookies!")
 
 if __name__ == "__main__":
     generate_playlists()
