@@ -1,53 +1,147 @@
-import os
-import requests
+const fs = require('fs');
 
-# ১০০ থেকে ৪১০ পর্যন্ত আইডি জেনারেট করা
-CHANNEL_IDS = [str(i) for i in range(100, 411)]
+const BENGALI_KEYWORDS = [
+    'somoy', 'jamuna', 'independent', 'dbc', 'ekattor', 'atn', 'channel i', 
+    'ntv', 'rtv', 'bangla', 'bd', 'deepto', 'nagorik', 'btv', 'maasranga', 'channel 24'
+];
 
-OUTPUT_FILE = "akash_go.m3u"
+const USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'okhttp/5.1.0'
+];
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "application/json"
+function getRandomUserAgent() {
+    return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
 }
 
-def generate_playlist():
-    playlist_content = "#EXTM3U\n\n"
-    found_channels = 0
-    
-    for channel_id in CHANNEL_IDS:
-        url = f"https://kong.akash-go.com/content-detail/pub/api/v6/channels/{channel_id}"
-        try:
-            response = requests.get(url, headers=headers, timeout=5)
+async function generatePlaylists() {
+    console.log("Fetching channels and dynamic cookies...");
+
+    const rawChannels = [];
+
+    // ১০০ থেকে ৪১০ আইডি ফেচ করা
+    for (let id = 100; id <= 410; id++) {
+        try {
+            const apiUrl = `https://kong.akash-go.com/content-detail/pub/api/v6/channels/${id}`;
             
-            if response.status_code == 200:
-                data = response.json()
-                content_data = data.get("data", {})
-                
-                title = content_data.get("title") or content_data.get("name") or f"Channel {channel_id}"
-                logo = content_data.get("poster") or content_data.get("logo") or ""
-                group = content_data.get("category") or "General"
-                
-                # সম্ভাব্য স্ট্রিমিং ইউআরএল ফিল্ড চেক
-                stream_url = (
-                    content_data.get("streamUrl") or 
-                    content_data.get("stream_url") or 
-                    content_data.get("url") or 
-                    content_data.get("playUrl") or ""
-                )
-                
-                if stream_url:
-                    playlist_content += f'#EXTINF:-1 tvg-id="{channel_id}" tvg-logo="{logo}" group-title="{group}",{title}\n'
-                    playlist_content += f'{stream_url}\n\n'
-                    found_channels += 1
-                    print(f"Added Channel: {title} (ID: {channel_id})")
-        except Exception:
-            pass
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'User-Agent': getRandomUserAgent(),
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Origin': 'https://akashgo.com',
+                    'Referer': 'https://akashgo.com/',
+                    'x-platform': 'web',
+                    'x-app-version': '1.0.0',
+                    'x-device-id': `web_${Math.random().toString(36).substring(2, 10)}`
+                }
+            });
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write(playlist_content)
-        
-    print(f"Total {found_channels} channels added to {OUTPUT_FILE}")
+            if (!response.ok) continue;
 
-if __name__ == "__main__":
-    generate_playlist()
+            const resData = await response.json();
+            // channelMeta অথবা ডাটার মূল অবজেক্ট উভয় স্ট্রাকচার চেক করা
+            const channelMeta = resData?.data?.channelMeta || resData?.data;
+
+            if (channelMeta && (channelMeta.channelName || channelMeta.name || channelMeta.title)) {
+                const channelName = (channelMeta.channelName || channelMeta.name || channelMeta.title).trim();
+                const logoUrl = channelMeta.logo || channelMeta.poster || "";
+                const streamUrl = channelMeta.nonProtectedHlsConsumerUrl || channelMeta.protectedHlsConsumerUrl || channelMeta.streamUrl || channelMeta.url || "";
+                const category = channelMeta.category || "News";
+
+                // ডায়নামিক কুকি বের করা
+                let dynamicCookie = "";
+                const setCookieHeader = response.headers.get('set-cookie');
+                if (setCookieHeader) {
+                    dynamicCookie = setCookieHeader.split(';')[0];
+                }
+
+                if (!dynamicCookie) {
+                    if (channelMeta.cookie) {
+                        dynamicCookie = channelMeta.cookie;
+                    } else if (channelMeta.token) {
+                        dynamicCookie = `Edge-Policy=${channelMeta.token}`;
+                    } else if (channelMeta.edgeSignature && channelMeta.edgePolicy) {
+                        dynamicCookie = `Edge-Policy=${channelMeta.edgePolicy};Edge-Signature=${channelMeta.edgeSignature}`;
+                    }
+                }
+
+                // যদি স্ট্রিম ইউআরএল থাকে তবে যুক্ত হবে
+                if (streamUrl) {
+                    rawChannels.push({
+                        name: channelName,
+                        logo: logoUrl,
+                        stream_url: streamUrl,
+                        cookie: dynamicCookie || "Edge-Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9vd3Jjb3ZjcnB5LmdwY2RuLm5ldC9icGstdHYvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRWRnZVRpbWUiOjE3ODgyNTMyMzd9fX1dfQ;Edge-Signature=V3G6GBiA2N6wlM8aLqfdsv1kOW8Z1pxEZgL9GwEuiIs",
+                        category: category
+                    });
+                    console.log(`[✓] Added: ${channelName}`);
+                }
+            }
+        } catch (err) {
+            // স্কিপ আইডি
+        }
+    }
+
+    if (rawChannels.length === 0) {
+        console.error("No channels fetched! Skipping file write to prevent saving empty list.");
+        return;
+    }
+
+    // ডুপ্লিকেট ফিল্টার
+    const uniqueChannels = [];
+    const seenNames = new Set();
+
+    for (const ch of rawChannels) {
+        const lowerName = ch.name.toLowerCase();
+        if (!seenNames.has(lowerName)) {
+            seenNames.add(lowerName);
+            uniqueChannels.push(ch);
+        }
+    }
+
+    // বাংলা চ্যানেল উপরে সর্ট করা
+    uniqueChannels.sort((a, b) => {
+        const aIsBengali = BENGALI_KEYWORDS.some(key => a.name.toLowerCase().includes(key)) || a.category.toLowerCase().includes('bangla');
+        const bIsBengali = BENGALI_KEYWORDS.some(key => b.name.toLowerCase().includes(key)) || b.category.toLowerCase().includes('bangla');
+
+        if (aIsBengali && !bIsBengali) return -1;
+        if (!aIsBengali && bIsBengali) return 1;
+        return a.name.localeCompare(b.name);
+    });
+
+    // ১. M3U প্লেলিস্ট সেভ করা (akash_go.m3u এবং playlist.m3u দুটো নামেই সেভ হবে)
+    let m3uContent = '#EXTM3U\n\n';
+    uniqueChannels.forEach(ch => {
+        m3uContent += `#EXTINF:-1 tvg-logo="${ch.logo}" group-title="${ch.category}",${ch.name}\n`;
+        m3uContent += `#EXTHTTP:{"cookie":"${ch.cookie}"}\n`;
+        m3uContent += `${ch.stream_url}\n\n`;
+    });
+    
+    fs.writeFileSync('akash_go.m3u', m3uContent);
+    fs.writeFileSync('playlist.m3u', m3uContent);
+
+    // ২. JSON প্লেলিস্ট সেভ করা
+    const today = new Date().toISOString().split('T')[0];
+    const jsonStructure = {
+        status: "success",
+        name: "Live Channels",
+        owner: "Ahammad Ali",
+        channels_amount: uniqueChannels.length,
+        last_update: today,
+        response: uniqueChannels.map((ch, index) => ({
+            id: index + 1,
+            name: ch.name,
+            logo: ch.logo,
+            stream_url: ch.stream_url,
+            cookie: ch.cookie
+        }))
+    };
+
+    fs.writeFileSync('playlist.json', JSON.stringify(jsonStructure, null, 2));
+    console.log(`সফলভাবে ${uniqueChannels.length}টি চ্যানেল এবং কুকিসহ ফাইল সেভ করা হয়েছে!`);
+}
+
+generatePlaylists();
