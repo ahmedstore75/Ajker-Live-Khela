@@ -2,11 +2,8 @@ name: Generate Akash Go Playlist
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটো রান হবে
-  workflow_dispatch: # ম্যানুয়ালি চালানোর জন্য
-  push:
-    branches:
-      - main
+    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটোমেটিক রান হবে
+  workflow_dispatch: # ম্যানুয়ালি বোতাম চেপে চালানোর সুবিধা
 
 permissions:
   contents: write
@@ -29,21 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Fetch and Execute Script from Private Repo
-        env:
-          REPO_NAME: ${{ secrets.SECRET_REPO_NAME }}
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          # প্রাইভেট রেপো ক্লোন করা
-          git clone https://${GH_PAT}@github.com/sm-monirulislam/${REPO_NAME}.git private_code
-          
-          # স্ক্রিপ্ট রান করা
-          python private_code/scripts/akash_sm.py
-          
-          # প্রাইভেট কোড ডিলিট করে ক্লিন করা
-          rm -rf private_code
+      - name: Run Akash Playlist Script
+        run: python scripts/akash_sm.py
 
-      - name: Commit and Push Updated Playlist
+      - name: Commit and Push Playlist
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -51,7 +37,7 @@ jobs:
           git add akash_go.m3u
 
           if git diff --cached --quiet; then
-            echo "No changes in playlist. Skipping commit."
+            echo "No changes to commit."
           else
             git commit -m "🔁 Auto-updated Akash Go Playlist"
             git push origin HEAD
