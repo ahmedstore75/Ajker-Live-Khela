@@ -1,12 +1,11 @@
 import os
 import requests
 
-# এখানে আকাশ গো (Akash Go)-এর সঠিক চ্যানেল ID গুলো দিন
+# আপনার প্রয়োজনীয় আকাশ গো চ্যানেল ID গুলো এখানে বসান
 CHANNEL_IDS = [
-    "1", "2", "3", "4", "5" # আপনার জানা সঠিক ID দিন
+    "101", "102", "103"
 ]
 
-BASE_URL = "https://kong.akash-go.com/content-detail/pub/api/v6/channels/"
 OUTPUT_FILE = "akash_go.m3u"
 
 headers = {
@@ -19,16 +18,18 @@ def generate_playlist():
     has_data = False
     
     for channel_id in CHANNEL_IDS:
-        url = f"{BASE_URL}{channel_id}"
+        # আপনার চাওয়া API লিংক স্ট্রাকচার
+        url = f"https://kong.akash-go.com/content-detail/pub/api/v6/channels/{channel_id}"
+        
         try:
             response = requests.get(url, headers=headers, timeout=10)
-            print(f"Fetching ID {channel_id}: Status {response.status_code}")
+            print(f"Fetching ID {channel_id}: Status Code {response.status_code}")
             
             if response.status_code == 200:
                 data = response.json()
                 content_data = data.get("data", {})
                 
-                # API এর কি (key) নাম যাচাই করা
+                # API থেকে প্রয়োজনীয় তথ্য নেওয়ার ক্ষেত্রগুলো
                 title = content_data.get("title") or content_data.get("name") or f"Channel {channel_id}"
                 logo = content_data.get("poster") or content_data.get("logo") or ""
                 group = content_data.get("category") or "General"
@@ -39,16 +40,19 @@ def generate_playlist():
                     playlist_content += f'{stream_url}\n\n'
                     has_data = True
                 else:
-                    print(f"No stream URL found for channel {channel_id}. Full response: {content_data}")
+                    print(f"No stream URL found in response for channel {channel_id}")
+            else:
+                print(f"Failed to fetch channel {channel_id}")
         except Exception as e:
             print(f"Error fetching channel {channel_id}: {e}")
 
+    # ডাটা পাওয়া গেলে M3U ফাইল সেভ করা
     if has_data:
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write(playlist_content)
-        print(f"Playlist successfully saved to {OUTPUT_FILE}")
+        print(f"Successfully generated and saved to {OUTPUT_FILE}")
     else:
-        print("No valid channel data was fetched!")
+        print("No channel stream URL was generated.")
 
 if __name__ == "__main__":
     generate_playlist()
