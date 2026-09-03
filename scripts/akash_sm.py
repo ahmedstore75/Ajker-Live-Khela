@@ -1,6 +1,7 @@
 import os
 import random
 import json
+import time
 from datetime import datetime
 import requests
 
@@ -15,14 +16,14 @@ USER_AGENTS = [
     'okhttp/5.1.0'
 ]
 
-# ডিফল্ট কুকি (এপিআই থেকে কুকি না আসলে এটি ব্যবহৃত হবে)
+# ডিফল্ট কুকি (এপিআই থেকে কোনো কুকি না পাওয়া গেলে এটি ব্যবহৃত হবে)
 DEFAULT_COOKIE = "Edge-Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9vd3Jjb3ZjcnB5LmdwY2RuLm5ldC9icGstdHYvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRWRnZVRpbWUiOjE3ODgyNTMyMzd9fX1dfQ;Edge-Signature=V3G6GBiA2N6wlM8aLqfdsv1kOW8Z1pxEZgL9GwEuiIs"
 
 def get_random_user_agent():
     return random.choice(USER_AGENTS)
 
 def generate_playlists():
-    print("Fetching channels and applying cookies...")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Fetching fresh cookies & updating playlists...")
     raw_channels = []
     session = requests.Session()
 
@@ -59,7 +60,7 @@ def generate_playlists():
                 )
                 category = channel_meta.get('category') or "General"
 
-                # ১. এপিআই রেসপন্স থেকে কুকি খোঁজা
+                # এপিআই রেসপন্স থেকে ডায়নামিক কুকি বের করা
                 dynamic_cookie = ""
                 set_cookie = response.headers.get('set-cookie')
                 if set_cookie:
@@ -77,7 +78,6 @@ def generate_playlists():
                     elif channel_meta.get('cookie'):
                         dynamic_cookie = channel_meta.get('cookie')
 
-                # ২. যদি কোনো কুকি না পাওয়া যায়, তবে বাধ্যতামূলক ডিফল্ট কুকি বসানো
                 final_cookie = dynamic_cookie if dynamic_cookie else DEFAULT_COOKIE
 
                 if stream_url and channel_name:
@@ -113,43 +113,23 @@ def generate_playlists():
 
     unique_channels.sort(key=sort_key)
 
-    # ১. M3U তৈরি (বাধ্যতামূলক কুকি হেডারসহ)
+    # M3U ফাইল সেভ করা
     m3u_content = "#EXTM3U\n\n"
     for ch in unique_channels:
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
         m3u_content += f'#EXTHTTP:{{"cookie":"{ch["cookie"]}"}}\n'
         m3u_content += f'{ch["stream_url"]}\n\n'
 
-    with open('akash_go.m3u', 'w', encoding='utf-8') as f:
-        f.write(m3u_content)
-
     with open('playlist.m3u', 'w', encoding='utf-8') as f:
         f.write(m3u_content)
 
-    # ২. JSON তৈরি
-    today = datetime.now().strftime('%Y-%m-%d')
-    json_structure = {
-        "status": "success",
-        "name": "Live Channels",
-        "owner": "Ahammad Ali",
-        "channels_amount": len(unique_channels),
-        "last_update": today,
-        "response": [
-            {
-                "id": idx + 1,
-                "name": ch["name"],
-                "logo": ch["logo"],
-                "stream_url": ch["stream_url"],
-                "cookie": ch["cookie"]
-            }
-            for idx, ch in enumerate(unique_channels)
-        ]
-    }
-
-    with open('playlist.json', 'w', encoding='utf-8') as f:
-        json.dump(json_structure, f, indent=2, ensure_ascii=False)
-
-    print(f"Total {len(unique_channels)} channels saved successfully with cookies!")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Playlist updated! Total {len(unique_channels)} channels.")
 
 if __name__ == "__main__":
-    generate_playlists()
+    # প্রতি ১ ঘণ্টা (৩৬০০ সেকেন্ড) বা ৩০ মিনিট (১৮০০ সেকেন্ড) পর পর অটো রান হবে
+    UPDATE_INTERVAL = 1800  # ৩০ মিনিট
+
+    while True:
+        generate_playlists()
+        print(f"Waiting for {UPDATE_INTERVAL // 60} minutes until next update...\n")
+        time.sleep(UPDATE_INTERVAL)
