@@ -1,7 +1,6 @@
 import os
 import random
 import json
-import time
 from datetime import datetime
 import requests
 
@@ -16,14 +15,13 @@ USER_AGENTS = [
     'okhttp/5.1.0'
 ]
 
-# ডিফল্ট কুকি (এপিআই থেকে কোনো কুকি না পাওয়া গেলে এটি ব্যবহৃত হবে)
 DEFAULT_COOKIE = "Edge-Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9vd3Jjb3ZjcnB5LmdwY2RuLm5ldC9icGstdHYvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRWRnZVRpbWUiOjE3ODgyNTMyMzd9fX1dfQ;Edge-Signature=V3G6GBiA2N6wlM8aLqfdsv1kOW8Z1pxEZgL9GwEuiIs"
 
 def get_random_user_agent():
     return random.choice(USER_AGENTS)
 
 def generate_playlists():
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Fetching fresh cookies & updating playlists...")
+    print("Fetching channels and cookies...")
     raw_channels = []
     session = requests.Session()
 
@@ -40,7 +38,7 @@ def generate_playlists():
                 'x-device-id': f"web_{''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=10))}"
             }
 
-            response = session.get(api_url, headers=headers, timeout=8)
+            response = session.get(api_url, headers=headers, timeout=5)
             if response.status_code != 200:
                 continue
 
@@ -60,7 +58,6 @@ def generate_playlists():
                 )
                 category = channel_meta.get('category') or "General"
 
-                # এপিআই রেসপন্স থেকে ডায়নামিক কুকি বের করা
                 dynamic_cookie = ""
                 set_cookie = response.headers.get('set-cookie')
                 if set_cookie:
@@ -92,10 +89,10 @@ def generate_playlists():
             pass
 
     if not raw_channels:
-        print("No channels fetched!")
+        print("No channels fetched! Check connection or API response.")
         return
 
-    # ডুপ্লিকেট রিমুভ
+    # ডুপ্লিকেট ফিল্টার
     unique_channels = []
     seen_names = set()
     for ch in raw_channels:
@@ -104,7 +101,7 @@ def generate_playlists():
             seen_names.add(lower_name)
             unique_channels.append(ch)
 
-    # বাংলা চ্যানেল সর্ট
+    # বাংলা সর্টিং
     def sort_key(ch):
         name_lower = ch['name'].lower()
         cat_lower = ch['category'].lower()
@@ -113,7 +110,7 @@ def generate_playlists():
 
     unique_channels.sort(key=sort_key)
 
-    # M3U ফাইল সেভ করা
+    # M3U জেনারেট
     m3u_content = "#EXTM3U\n\n"
     for ch in unique_channels:
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
@@ -123,13 +120,7 @@ def generate_playlists():
     with open('playlist.m3u', 'w', encoding='utf-8') as f:
         f.write(m3u_content)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Playlist updated! Total {len(unique_channels)} channels.")
+    print(f"Success! {len(unique_channels)} channels saved in playlist.m3u")
 
 if __name__ == "__main__":
-    # প্রতি ১ ঘণ্টা (৩৬০০ সেকেন্ড) বা ৩০ মিনিট (১৮০০ সেকেন্ড) পর পর অটো রান হবে
-    UPDATE_INTERVAL = 1800  # ৩০ মিনিট
-
-    while True:
-        generate_playlists()
-        print(f"Waiting for {UPDATE_INTERVAL // 60} minutes until next update...\n")
-        time.sleep(UPDATE_INTERVAL)
+    generate_playlists()
