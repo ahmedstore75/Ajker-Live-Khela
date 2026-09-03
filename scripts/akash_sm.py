@@ -3,6 +3,7 @@ import random
 import json
 from datetime import datetime
 import requests
+from concurrent.futures import ThreadPoolExecutor
 
 BENGALI_KEYWORDS = [
     'somoy', 'jamuna', 'independent', 'dbc', 'ekattor', 'atn', 'channel i', 
@@ -20,79 +21,87 @@ DEFAULT_COOKIE = "Edge-Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9vd3
 def get_random_user_agent():
     return random.choice(USER_AGENTS)
 
+def fetch_single_channel(channel_id):
+    try:
+        api_url = f"https://kong.akash-go.com/content-detail/pub/api/v6/channels/{channel_id}"
+        headers = {
+            'User-Agent': get_random_user_agent(),
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://akashgo.com',
+            'Referer': 'https://akashgo.com/',
+            'x-platform': 'web',
+            'x-app-version': '1.0.0',
+            'x-device-id': f"web_{''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=10))}"
+        }
+
+        response = requests.get(api_url, headers=headers, timeout=3)
+        if response.status_code != 200:
+            return None
+
+        res_data = response.json()
+        data = res_data.get('data', {})
+        channel_meta = data.get('channelMeta') if isinstance(data, dict) and 'channelMeta' in data else data
+
+        if isinstance(channel_meta, dict):
+            channel_name = (channel_meta.get('channelName') or channel_meta.get('name') or channel_meta.get('title') or '').strip()
+            logo_url = channel_meta.get('logo') or channel_meta.get('poster') or ""
+            stream_url = (
+                channel_meta.get('nonProtectedHlsConsumerUrl') or 
+                channel_meta.get('protectedHlsConsumerUrl') or 
+                channel_meta.get('streamUrl') or 
+                channel_meta.get('url') or 
+                data.get('streamUrl') or ""
+            )
+            category = channel_meta.get('category') or "General"
+
+            dynamic_cookie = ""
+            set_cookie = response.headers.get('set-cookie')
+            if set_cookie:
+                dynamic_cookie = set_cookie.split(';')[0]
+
+            if not dynamic_cookie:
+                edge_policy = channel_meta.get('edgePolicy') or data.get('edgePolicy')
+                edge_sig = channel_meta.get('edgeSignature') or data.get('edgeSignature')
+                token = channel_meta.get('token') or data.get('token')
+                
+                if edge_policy and edge_sig:
+                    dynamic_cookie = f"Edge-Policy={edge_policy}; Edge-Signature={edge_sig}"
+                elif token:
+                    dynamic_cookie = f"Edge-Policy={token}"
+                elif channel_meta.get('cookie'):
+                    dynamic_cookie = channel_meta.get('cookie')
+
+            final_cookie = dynamic_cookie if dynamic_cookie else DEFAULT_COOKIE
+
+            if stream_url and channel_name:
+                print(f"[+] Found Channel: {channel_name}")
+                return {
+                    'name': channel_name,
+                    'logo': logo_url,
+                    'stream_url': stream_url,
+                    'cookie': final_cookie,
+                    'category': category
+                }
+    except Exception:
+        pass
+    return None
+
 def generate_playlists():
-    print("Fetching channels and cookies...")
+    print("Fetching channels rapidly using Multithreading...")
     raw_channels = []
-    session = requests.Session()
 
-    for channel_id in range(100, 411):
-        try:
-            api_url = f"https://kong.akash-go.com/content-detail/pub/api/v6/channels/{channel_id}"
-            headers = {
-                'User-Agent': get_random_user_agent(),
-                'Accept': 'application/json, text/plain, */*',
-                'Origin': 'https://akashgo.com',
-                'Referer': 'https://akashgo.com/',
-                'x-platform': 'web',
-                'x-app-version': '1.0.0',
-                'x-device-id': f"web_{''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=10))}"
-            }
-
-            response = session.get(api_url, headers=headers, timeout=5)
-            if response.status_code != 200:
-                continue
-
-            res_data = response.json()
-            data = res_data.get('data', {})
-            channel_meta = data.get('channelMeta') if isinstance(data, dict) and 'channelMeta' in data else data
-
-            if isinstance(channel_meta, dict):
-                channel_name = (channel_meta.get('channelName') or channel_meta.get('name') or channel_meta.get('title') or '').strip()
-                logo_url = channel_meta.get('logo') or channel_meta.get('poster') or ""
-                stream_url = (
-                    channel_meta.get('nonProtectedHlsConsumerUrl') or 
-                    channel_meta.get('protectedHlsConsumerUrl') or 
-                    channel_meta.get('streamUrl') or 
-                    channel_meta.get('url') or 
-                    data.get('streamUrl') or ""
-                )
-                category = channel_meta.get('category') or "General"
-
-                dynamic_cookie = ""
-                set_cookie = response.headers.get('set-cookie')
-                if set_cookie:
-                    dynamic_cookie = set_cookie.split(';')[0]
-
-                if not dynamic_cookie:
-                    edge_policy = channel_meta.get('edgePolicy') or data.get('edgePolicy')
-                    edge_sig = channel_meta.get('edgeSignature') or data.get('edgeSignature')
-                    token = channel_meta.get('token') or data.get('token')
-                    
-                    if edge_policy and edge_sig:
-                        dynamic_cookie = f"Edge-Policy={edge_policy}; Edge-Signature={edge_sig}"
-                    elif token:
-                        dynamic_cookie = f"Edge-Policy={token}"
-                    elif channel_meta.get('cookie'):
-                        dynamic_cookie = channel_meta.get('cookie')
-
-                final_cookie = dynamic_cookie if dynamic_cookie else DEFAULT_COOKIE
-
-                if stream_url and channel_name:
-                    raw_channels.append({
-                        'name': channel_name,
-                        'logo': logo_url,
-                        'stream_url': stream_url,
-                        'cookie': final_cookie,
-                        'category': category
-                    })
-        except Exception:
-            pass
+    # ৫০টি থ্রেড একসাথে কাজ করবে, ফলে ১০০-৪১০ চ্যানেল ১০-১৫ সেকেন্ডে কমপ্লিট হবে
+    with ThreadPoolExecutor(max_workers=50) as executor:
+        results = executor.map(fetch_single_channel, range(100, 411))
+        for res in results:
+            if res:
+                raw_channels.append(res)
 
     if not raw_channels:
-        print("No channels fetched! Check connection or API response.")
+        print("No channels fetched! Network problem or Akash Go API down.")
         return
 
-    # ডুপ্লিকেট ফিল্টার
+    # ডুপ্লিকেট রিমুভ
     unique_channels = []
     seen_names = set()
     for ch in raw_channels:
@@ -101,7 +110,7 @@ def generate_playlists():
             seen_names.add(lower_name)
             unique_channels.append(ch)
 
-    # বাংলা সর্টিং
+    # বাংলা চ্যানেল সর্ট
     def sort_key(ch):
         name_lower = ch['name'].lower()
         cat_lower = ch['category'].lower()
@@ -110,7 +119,7 @@ def generate_playlists():
 
     unique_channels.sort(key=sort_key)
 
-    # M3U জেনারেট
+    # ১. M3U তৈরি
     m3u_content = "#EXTM3U\n\n"
     for ch in unique_channels:
         m3u_content += f'#EXTINF:-1 tvg-logo="{ch["logo"]}" group-title="{ch["category"]}",{ch["name"]}\n'
@@ -120,7 +129,29 @@ def generate_playlists():
     with open('playlist.m3u', 'w', encoding='utf-8') as f:
         f.write(m3u_content)
 
-    print(f"Success! {len(unique_channels)} channels saved in playlist.m3u")
+    # ২. JSON তৈরি
+    today = datetime.now().strftime('%Y-%m-%d')
+    json_structure = {
+        "status": "success",
+        "name": "Live Channels",
+        "channels_amount": len(unique_channels),
+        "last_update": today,
+        "response": [
+            {
+                "id": idx + 1,
+                "name": ch["name"],
+                "logo": ch["logo"],
+                "stream_url": ch["stream_url"],
+                "cookie": ch["cookie"]
+            }
+            for idx, ch in enumerate(unique_channels)
+        ]
+    }
+
+    with open('playlist.json', 'w', encoding='utf-8') as f:
+        json.dump(json_structure, f, indent=2, ensure_ascii=False)
+
+    print(f"\nSUCCESS! Total {len(unique_channels)} channels saved in 'playlist.m3u' and 'playlist.json'.")
 
 if __name__ == "__main__":
     generate_playlists()
