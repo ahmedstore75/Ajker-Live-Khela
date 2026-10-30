@@ -6,7 +6,7 @@ import requests
 
 BENGALI_KEYWORDS = [
     'somoy', 'jamuna', 'independent', 'dbc', 'ekattor', 'atn', 'channel i', 
-    'ntv', 'rtv', 'bangla', 'bd', 'deepto', 'nagorik', 'btv', 'maasranga', 'channel 24'
+    'ntv', 'rtv', 'bangla', 'bd', 'deepto', 'nagorik', 'btv', 'maasranga', 'channel 24', 'satv hd'
 ]
 
 USER_AGENTS = [
